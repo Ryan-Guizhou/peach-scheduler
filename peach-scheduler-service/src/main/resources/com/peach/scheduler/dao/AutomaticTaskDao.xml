@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.peach.scheduler.dao.AutomaticTaskDao">
+    <sql id="allColumn">
+        TASK_ID,                                          TASK_CODE,                                        TASK_NAME,                                        TASK_DESC,
+        TASK_TYPE,                                        START_DATE,                                       END_DATE,                                         TASK_INTERVAL,
+        RUN_TIMES,                                        IS_ENABLED,                                       TASK_CLASS,                                       TASK_PARAM,
+        REMARK,                                           SCHEDULE_TYPE,                                    MONTH_OF_YEAR,                                    DAY_OF_WEEK,
+        DAY_OF_MONTH,                                     HOUR_OF_DAY,                                      MIN_OF_DAY,                                       SYS_ID
+
+    </sql>
+
+    <sql id="allColumnAlias">
+        TASK_ID as taskId,                                TASK_CODE as taskCode,                            TASK_NAME as taskName,                            TASK_DESC as taskDesc,
+        TASK_TYPE as taskType,                            START_DATE as startDate,                          END_DATE as endDate,                              TASK_INTERVAL as taskInterval,
+        RUN_TIMES as runTimes,                            IS_ENABLED as isEnabled,                          TASK_CLASS as taskClass,                          TASK_PARAM as taskParam,
+        REMARK as remark,                                 SCHEDULE_TYPE as scheduleType,                    MONTH_OF_YEAR as monthOfYear,                     DAY_OF_WEEK as dayOfWeek,
+        DAY_OF_MONTH as dayOfMonth,                       HOUR_OF_DAY as hourOfDay,                         MIN_OF_DAY as minOfDay,                           SYS_ID as sysId
+
+    </sql>
+
+    <sql id="allColumnValue">
+        #{taskId,jdbcType=VARCHAR},             #{taskCode,jdbcType=VARCHAR},           #{taskName,jdbcType=VARCHAR},           #{taskDesc,jdbcType=VARCHAR},
+        #{taskType,jdbcType=INTEGER},           #{startDate,jdbcType=VARCHAR},          #{endDate,jdbcType=VARCHAR},            #{taskInterval,jdbcType=INTEGER},
+        #{runTimes,jdbcType=INTEGER},           #{isEnabled,jdbcType=INTEGER},          #{taskClass,jdbcType=VARCHAR},          #{taskParam,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},             #{scheduleType,jdbcType=INTEGER},       #{monthOfYear,jdbcType=INTEGER},        #{dayOfWeek,jdbcType=INTEGER},
+        #{dayOfMonth,jdbcType=INTEGER},         #{hourOfDay,jdbcType=INTEGER},          #{minOfDay,jdbcType=INTEGER},           #{sysId,jdbcType=VARCHAR}
+
+    </sql>
+
+    <sql id="itemAllColumnValue">
+        #{item.taskId,jdbcType=VARCHAR},        #{item.taskCode,jdbcType=VARCHAR},      #{item.taskName,jdbcType=VARCHAR},      #{item.taskDesc,jdbcType=VARCHAR},
+        #{item.taskType,jdbcType=INTEGER},      #{item.startDate,jdbcType=VARCHAR},     #{item.endDate,jdbcType=VARCHAR},       #{item.taskInterval,jdbcType=INTEGER},
+        #{item.runTimes,jdbcType=INTEGER},      #{item.isEnabled,jdbcType=INTEGER},     #{item.taskClass,jdbcType=VARCHAR},     #{item.taskParam,jdbcType=VARCHAR},
+        #{item.remark,jdbcType=VARCHAR},        #{item.scheduleType,jdbcType=INTEGER},  #{item.monthOfYear,jdbcType=INTEGER},   #{item.dayOfWeek,jdbcType=INTEGER},
+        #{item.dayOfMonth,jdbcType=INTEGER},    #{item.hourOfDay,jdbcType=INTEGER},     #{item.minOfDay,jdbcType=INTEGER},      #{item.sysId,jdbcType=VARCHAR}
+
+    </sql>
+
+    <sql id="allColumnSet">
+        <trim suffixOverrides=",">
+            <if test="taskCode != null and taskCode != ''">
+                TASK_CODE = #{taskCode,jdbcType=VARCHAR},
+            </if>
+            <if test="taskName != null and taskName != ''">
+                TASK_NAME = #{taskName,jdbcType=VARCHAR},
+            </if>
+            <if test="taskDesc != null and taskDesc != ''">
+                TASK_DESC = #{taskDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="taskType != null">
+                TASK_TYPE = #{taskType,jdbcType=INTEGER},
+            </if>
+            <if test="startDate != null and startDate != ''">
+                START_DATE = #{startDate,jdbcType=VARCHAR},
+            </if>
+            <if test="endDate != null and endDate != ''">
+                END_DATE = #{endDate,jdbcType=VARCHAR},
+            </if>
+            <if test="taskInterval != null">
+                TASK_INTERVAL = #{taskInterval,jdbcType=INTEGER},
+            </if>
+            <if test="runTimes != null">
+                RUN_TIMES = #{runTimes,jdbcType=INTEGER},
+            </if>
+            <if test="isEnabled != null">
+                IS_ENABLED = #{isEnabled,jdbcType=INTEGER},
+            </if>
+            <if test="taskClass != null and taskClass != ''">
+                TASK_CLASS = #{taskClass,jdbcType=VARCHAR},
+            </if>
+            <if test="taskParam != null and taskParam != ''">
+                TASK_PARAM = #{taskParam,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null and remark != ''">
+                REMARK = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleType != null">
+                SCHEDULE_TYPE = #{scheduleType,jdbcType=INTEGER},
+            </if>
+            <if test="monthOfYear != null">
+                MONTH_OF_YEAR = #{monthOfYear,jdbcType=INTEGER},
+            </if>
+            <if test="dayOfWeek != null">
+                DAY_OF_WEEK = #{dayOfWeek,jdbcType=INTEGER},
+            </if>
+            <if test="dayOfMonth != null">
+                DAY_OF_MONTH = #{dayOfMonth,jdbcType=INTEGER},
+            </if>
+            <if test="hourOfDay != null">
+                HOUR_OF_DAY = #{hourOfDay,jdbcType=INTEGER},
+            </if>
+            <if test="minOfDay != null">
+                MIN_OF_DAY = #{minOfDay,jdbcType=INTEGER},
+            </if>
+            <if test="sysId != null and sysId != ''">
+                SYS_ID = #{sysId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="updateSelectiveColumn">
+        <trim suffixOverrides=",">
+            <if test="taskCode != null and taskCode != ''">
+                TASK_CODE,
+            </if>
+            <if test="taskName != null and taskName != ''">
+                TASK_NAME,
+            </if>
+            <if test="taskDesc != null and taskDesc != ''">
+                TASK_DESC,
+            </if>
+            <if test="taskType != null">
+                TASK_TYPE,
+            </if>
+            <if test="startDate != null and startDate != ''">
+                START_DATE,
+            </if>
+            <if test="endDate != null and endDate != ''">
+                END_DATE,
+            </if>
+            <if test="taskInterval != null">
+                TASK_INTERVAL,
+            </if>
+            <if test="runTimes != null">
+                RUN_TIMES,
+            </if>
+            <if test="isEnabled != null">
+                IS_ENABLED,
+            </if>
+            <if test="taskClass != null and taskClass != ''">
+                TASK_CLASS,
+            </if>
+            <if test="taskParam != null and taskParam != ''">
+                TASK_PARAM,
+            </if>
+            <if test="remark != null and remark != ''">
+                REMARK,
+            </if>
+            <if test="scheduleType != null">
+                SCHEDULE_TYPE,
+            </if>
+            <if test="monthOfYear != null">
+                MONTH_OF_YEAR,
+            </if>
+            <if test="dayOfWeek != null">
+                DAY_OF_WEEK,
+            </if>
+            <if test="dayOfMonth != null">
+                DAY_OF_MONTH,
+            </if>
+            <if test="hourOfDay != null">
+                HOUR_OF_DAY,
+            </if>
+            <if test="minOfDay != null">
+                MIN_OF_DAY,
+            </if>
+            <if test="sysId != null and sysId != ''">
+                SYS_ID,
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="updateSelectiveValue">
+        <trim suffixOverrides=",">
+            <if test="taskCode != null and taskCode != ''">
+                #{taskCode,jdbcType=VARCHAR},
+            </if>
+            <if test="taskName != null and taskName != ''">
+                #{taskName,jdbcType=VARCHAR},
+            </if>
+            <if test="taskDesc != null and taskDesc != ''">
+                #{taskDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="taskType != null">
+                #{taskType,jdbcType=INTEGER},
+            </if>
+            <if test="startDate != null and startDate != ''">
+                #{startDate,jdbcType=VARCHAR},
+            </if>
+            <if test="endDate != null and endDate != ''">
+                #{endDate,jdbcType=VARCHAR},
+            </if>
+            <if test="taskInterval != null">
+                #{taskInterval,jdbcType=INTEGER},
+            </if>
+            <if test="runTimes != null">
+                #{runTimes,jdbcType=INTEGER},
+            </if>
+            <if test="isEnabled != null">
+                #{isEnabled,jdbcType=INTEGER},
+            </if>
+            <if test="taskClass != null and taskClass != ''">
+                #{taskClass,jdbcType=VARCHAR},
+            </if>
+            <if test="taskParam != null and taskParam != ''">
+                #{taskParam,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null and remark != ''">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleType != null">
+                #{scheduleType,jdbcType=INTEGER},
+            </if>
+            <if test="monthOfYear != null">
+                #{monthOfYear,jdbcType=INTEGER},
+            </if>
+            <if test="dayOfWeek != null">
+                #{dayOfWeek,jdbcType=INTEGER},
+            </if>
+            <if test="dayOfMonth != null">
+                #{dayOfMonth,jdbcType=INTEGER},
+            </if>
+            <if test="hourOfDay != null">
+                #{hourOfDay,jdbcType=INTEGER},
+            </if>
+            <if test="minOfDay != null">
+                #{minOfDay,jdbcType=INTEGER},
+            </if>
+            <if test="sysId != null and sysId != ''">
+                #{sysId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="allColumnCond">
+        <if test="taskId != null and taskId != ''">
+            AND TASK_ID = #{taskId,jdbcType=VARCHAR}
+        </if>
+        <if test="taskCode != null and taskCode != ''">
+            AND TASK_CODE = #{taskCode,jdbcType=VARCHAR}
+        </if>
+        <if test="taskName != null and taskName != ''">
+            AND TASK_NAME = #{taskName,jdbcType=VARCHAR}
+        </if>
+        <if test="taskDesc != null and taskDesc != ''">
+            AND TASK_DESC = #{taskDesc,jdbcType=VARCHAR}
+        </if>
+        <if test="taskType != null">
+            AND TASK_TYPE = #{taskType,jdbcType=INTEGER}
+        </if>
+        <if test="startDate != null and startDate != ''">
+            AND START_DATE = #{startDate,jdbcType=VARCHAR}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND END_DATE = #{endDate,jdbcType=VARCHAR}
+        </if>
+        <if test="taskInterval != null">
+            AND TASK_INTERVAL = #{taskInterval,jdbcType=INTEGER}
+        </if>
+        <if test="runTimes != null">
+            AND RUN_TIMES = #{runTimes,jdbcType=INTEGER}
+        </if>
+        <if test="isEnabled != null">
+            AND IS_ENABLED = #{isEnabled,jdbcType=INTEGER}
+        </if>
+        <if test="taskClass != null and taskClass != ''">
+            AND TASK_CLASS = #{taskClass,jdbcType=VARCHAR}
+        </if>
+        <if test="taskParam != null and taskParam != ''">
+            AND TASK_PARAM = #{taskParam,jdbcType=VARCHAR}
+        </if>
+        <if test="remark != null and remark != ''">
+            AND REMARK = #{remark,jdbcType=VARCHAR}
+        </if>
+        <if test="scheduleType != null">
+            AND SCHEDULE_TYPE = #{scheduleType,jdbcType=INTEGER}
+        </if>
+        <if test="monthOfYear != null">
+            AND MONTH_OF_YEAR = #{monthOfYear,jdbcType=INTEGER}
+        </if>
+        <if test="dayOfWeek != null">
+            AND DAY_OF_WEEK = #{dayOfWeek,jdbcType=INTEGER}
+        </if>
+        <if test="dayOfMonth != null">
+            AND DAY_OF_MONTH = #{dayOfMonth,jdbcType=INTEGER}
+        </if>
+        <if test="hourOfDay != null">
+            AND HOUR_OF_DAY = #{hourOfDay,jdbcType=INTEGER}
+        </if>
+        <if test="minOfDay != null">
+            AND MIN_OF_DAY = #{minOfDay,jdbcType=INTEGER}
+        </if>
+        <if test="sysId != null and sysId != ''">
+            AND SYS_ID = #{sysId,jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.peach.scheduler.entity.AutomaticTaskDO">
+        INSERT INTO AUTOMATIC_TASK (
+        <include refid="allColumn" />
+        ) VALUES (
+        <include refid="allColumnValue" />
+        )
+    </insert>
+
+    <insert id="batchInsert" parameterType="com.peach.scheduler.entity.AutomaticTaskDO">
+        INSERT INTO AUTOMATIC_TASK (
+        <include refid="allColumn" />
+        ) VALUES
+        <foreach collection="list" index="index" item="item">
+            (<include refid="allColumnValue"/>)
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.peach.scheduler.entity.AutomaticTaskDO">
+        UPDATE SET AUTOMATIC_TASK
+        <include refid="allColumnSet" />
+        WHERE
+        <include refid="allColumnCond" />
+    </update>
+
+    <delete id="delById" parameterType="string">
+        DELETE FROM AUTOMATIC_TASK
+        WHERE
+            TASK_ID = #{value,jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="delByIds" parameterType="java.util.List">
+        DELETE FROM AUTOMATIC_TASK
+        WHERE TASK_ID IN
+        <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+            #{id,jdbcType=VARCHAR}
+        </foreach>
+    </delete>
+
+    <delete id="del" parameterType="com.peach.scheduler.entity.AutomaticTaskDO">
+        DELETE FROM AUTOMATIC_TASK
+        WHERE 1=1
+        <include refid="allColumnCond" />
+    </delete>
+
+    <update id="updateById" parameterType="java.lang.String">
+        UPDATE AUTOMATIC_TASK SET
+        <include refid="allColumnSet" />
+        WHERE TASK_ID =  #{taskId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectById" parameterType="string" resultType="com.peach.scheduler.entity.AutomaticTaskDO">
+        SELECT
+        <include refid="allColumnAlias" />
+        FROM AUTOMATIC_TASK
+        WHERE TASK_ID = #{value,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByIds" parameterType="java.util.List" resultType="com.peach.scheduler.entity.AutomaticTaskDO">
+        SELECT
+        <include refid="allColumnAlias" />
+        FROM AUTOMATIC_TASK
+        WHERE TASK_ID IN
+        <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+            #{id,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+    <select id="select" parameterType="com.peach.scheduler.entity.AutomaticTaskDO" resultType="com.peach.scheduler.entity.AutomaticTaskDO">
+        SELECT
+        <include refid="allColumnAlias" />
+        FROM AUTOMATIC_TASK
+        WHERE 1=1
+        <include refid="allColumnCond" />
+    </select>
+
+    <select id="count" parameterType="com.peach.scheduler.entity.AutomaticTaskDO" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM AUTOMATIC_TASK
+        WHERE 1=1
+        <include refid="allColumnCond" />
+    </select>
+</mapper>

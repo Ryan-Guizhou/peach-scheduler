@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.peach.scheduler.dao.AutomaticTaskLogDao">
+    <sql id="allColumn">
+        ID,                                               TASK_ID,                                          TASK_CODE,                                        TASK_NAME,
+        TASK_DESC,                                        OPT_CODE,                                         OPT_NAME,                                         OPT_USER_ID,
+        OPT_USER_NAME,                                    OPT_TIME
+    </sql>
+
+    <sql id="allColumnAlias">
+        ID as id,                                         TASK_ID as taskId,                                TASK_CODE as taskCode,                            TASK_NAME as taskName,
+        TASK_DESC as taskDesc,                            OPT_CODE as optCode,                              OPT_NAME as optName,                              OPT_USER_ID as optUserId,
+        OPT_USER_NAME as optUserName,                     OPT_TIME as optTime
+    </sql>
+
+    <sql id="allColumnValue">
+        #{id,jdbcType=VARCHAR},                 #{taskId,jdbcType=VARCHAR},             #{taskCode,jdbcType=VARCHAR},           #{taskName,jdbcType=VARCHAR},
+        #{taskDesc,jdbcType=VARCHAR},           #{optCode,jdbcType=VARCHAR},            #{optName,jdbcType=VARCHAR},            #{optUserId,jdbcType=VARCHAR},
+        #{optUserName,jdbcType=VARCHAR},        #{optTime,jdbcType=VARCHAR}
+    </sql>
+
+    <sql id="itemAllColumnValue">
+        #{item.id,jdbcType=VARCHAR},            #{item.taskId,jdbcType=VARCHAR},        #{item.taskCode,jdbcType=VARCHAR},      #{item.taskName,jdbcType=VARCHAR},
+        #{item.taskDesc,jdbcType=VARCHAR},      #{item.optCode,jdbcType=VARCHAR},       #{item.optName,jdbcType=VARCHAR},       #{item.optUserId,jdbcType=VARCHAR},
+        #{item.optUserName,jdbcType=VARCHAR},   #{item.optTime,jdbcType=VARCHAR}
+    </sql>
+
+    <sql id="allColumnSet">
+        <trim suffixOverrides=",">
+            <if test="taskId != null and taskId != ''">
+                TASK_ID = #{taskId,jdbcType=VARCHAR},
+            </if>
+            <if test="taskCode != null and taskCode != ''">
+                TASK_CODE = #{taskCode,jdbcType=VARCHAR},
+            </if>
+            <if test="taskName != null and taskName != ''">
+                TASK_NAME = #{taskName,jdbcType=VARCHAR},
+            </if>
+            <if test="taskDesc != null and taskDesc != ''">
+                TASK_DESC = #{taskDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="optCode != null and optCode != ''">
+                OPT_CODE = #{optCode,jdbcType=VARCHAR},
+            </if>
+            <if test="optName != null and optName != ''">
+                OPT_NAME = #{optName,jdbcType=VARCHAR},
+            </if>
+            <if test="optUserId != null and optUserId != ''">
+                OPT_USER_ID = #{optUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="optUserName != null and optUserName != ''">
+                OPT_USER_NAME = #{optUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="optTime != null and optTime != ''">
+                OPT_TIME = #{optTime,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="updateSelectiveColumn">
+        <trim suffixOverrides=",">
+            <if test="taskId != null and taskId != ''">
+                TASK_ID,
+            </if>
+            <if test="taskCode != null and taskCode != ''">
+                TASK_CODE,
+            </if>
+            <if test="taskName != null and taskName != ''">
+                TASK_NAME,
+            </if>
+            <if test="taskDesc != null and taskDesc != ''">
+                TASK_DESC,
+            </if>
+            <if test="optCode != null and optCode != ''">
+                OPT_CODE,
+            </if>
+            <if test="optName != null and optName != ''">
+                OPT_NAME,
+            </if>
+            <if test="optUserId != null and optUserId != ''">
+                OPT_USER_ID,
+            </if>
+            <if test="optUserName != null and optUserName != ''">
+                OPT_USER_NAME,
+            </if>
+            <if test="optTime != null and optTime != ''">
+                OPT_TIME,
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="updateSelectiveValue">
+        <trim suffixOverrides=",">
+            <if test="taskId != null and taskId != ''">
+                #{taskId,jdbcType=VARCHAR},
+            </if>
+            <if test="taskCode != null and taskCode != ''">
+                #{taskCode,jdbcType=VARCHAR},
+            </if>
+            <if test="taskName != null and taskName != ''">
+                #{taskName,jdbcType=VARCHAR},
+            </if>
+            <if test="taskDesc != null and taskDesc != ''">
+                #{taskDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="optCode != null and optCode != ''">
+                #{optCode,jdbcType=VARCHAR},
+            </if>
+            <if test="optName != null and optName != ''">
+                #{optName,jdbcType=VARCHAR},
+            </if>
+            <if test="optUserId != null and optUserId != ''">
+                #{optUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="optUserName != null and optUserName != ''">
+                #{optUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="optTime != null and optTime != ''">
+                #{optTime,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="allColumnCond">
+        <if test="id != null and id != ''">
+            AND ID = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="taskId != null and taskId != ''">
+            AND TASK_ID = #{taskId,jdbcType=VARCHAR}
+        </if>
+        <if test="taskCode != null and taskCode != ''">
+            AND TASK_CODE = #{taskCode,jdbcType=VARCHAR}
+        </if>
+        <if test="taskName != null and taskName != ''">
+            AND TASK_NAME = #{taskName,jdbcType=VARCHAR}
+        </if>
+        <if test="taskDesc != null and taskDesc != ''">
+            AND TASK_DESC = #{taskDesc,jdbcType=VARCHAR}
+        </if>
+        <if test="optCode != null and optCode != ''">
+            AND OPT_CODE = #{optCode,jdbcType=VARCHAR}
+        </if>
+        <if test="optName != null and optName != ''">
+            AND OPT_NAME = #{optName,jdbcType=VARCHAR}
+        </if>
+        <if test="optUserId != null and optUserId != ''">
+            AND OPT_USER_ID = #{optUserId,jdbcType=VARCHAR}
+        </if>
+        <if test="optUserName != null and optUserName != ''">
+            AND OPT_USER_NAME = #{optUserName,jdbcType=VARCHAR}
+        </if>
+        <if test="optTime != null and optTime != ''">
+            AND OPT_TIME = #{optTime,jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.peach.scheduler.entity.AutomaticTaskLogDO">
+        INSERT INTO AUTOMATIC_TASK_LOG (
+        <include refid="allColumn" />
+        ) VALUES (
+        <include refid="allColumnValue" />
+        )
+    </insert>
+
+    <insert id="batchInsert" parameterType="com.peach.scheduler.entity.AutomaticTaskLogDO">
+        INSERT INTO AUTOMATIC_TASK_LOG (
+        <include refid="allColumn" />
+        ) VALUES
+        <foreach collection="list" index="index" item="item">
+            (<include refid="allColumnValue"/>)
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.peach.scheduler.entity.AutomaticTaskLogDO">
+        UPDATE SET AUTOMATIC_TASK_LOG
+        <include refid="allColumnSet" />
+        WHERE
+        <include refid="allColumnCond" />
+    </update>
+
+    <delete id="delById" parameterType="string">
+        DELETE FROM AUTOMATIC_TASK_LOG
+        WHERE
+            ID = #{value,jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="delByIds" parameterType="java.util.List">
+        DELETE FROM AUTOMATIC_TASK_LOG
+        WHERE ID IN
+        <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+            #{id,jdbcType=VARCHAR}
+        </foreach>
+    </delete>
+
+    <delete id="del" parameterType="com.peach.scheduler.entity.AutomaticTaskLogDO">
+        DELETE FROM AUTOMATIC_TASK_LOG
+        WHERE 1=1
+        <include refid="allColumnCond" />
+    </delete>
+
+    <update id="updateById" parameterType="java.lang.String">
+        UPDATE AUTOMATIC_TASK_LOG SET
+        <include refid="allColumnSet" />
+        WHERE ID =  #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectById" parameterType="string" resultType="com.peach.scheduler.entity.AutomaticTaskLogDO">
+        SELECT
+        <include refid="allColumnAlias" />
+        FROM AUTOMATIC_TASK_LOG
+        WHERE ID = #{value,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByIds" parameterType="java.util.List" resultType="com.peach.scheduler.entity.AutomaticTaskLogDO">
+        SELECT
+        <include refid="allColumnAlias" />
+        FROM AUTOMATIC_TASK_LOG
+        WHERE ID IN
+        <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+            #{id,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+    <select id="select" parameterType="com.peach.scheduler.entity.AutomaticTaskLogDO" resultType="com.peach.scheduler.entity.AutomaticTaskLogDO">
+        SELECT
+        <include refid="allColumnAlias" />
+        FROM AUTOMATIC_TASK_LOG
+        WHERE 1=1
+        <include refid="allColumnCond" />
+    </select>
+
+    <select id="count" parameterType="com.peach.scheduler.entity.AutomaticTaskLogDO" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM AUTOMATIC_TASK_LOG
+        WHERE 1=1
+        <include refid="allColumnCond" />
+    </select>
+</mapper>

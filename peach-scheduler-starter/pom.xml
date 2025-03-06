@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.peach.cn</groupId>
+        <artifactId>peach-scheduler</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>peach-scheduler-starter</artifactId>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.peach.cn</groupId>
+            <artifactId>peach-scheduler-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.peach.cn</groupId>
+            <artifactId>peach-scheduler-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.peach.cn</groupId>
+            <artifactId>peach-scheduler-entity</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.peach.cn</groupId>
+            <artifactId>peach-scheduler-entity</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>make-assem-zip</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <zip destfile="target/scheduler-${project.version}.zip"
+                                     encoding="utf-8">
+                                    <zipfileset dir="../peach-scheduler-api/target" prefix="" excludes="*-sources.jar" includes="*.jar" />
+                                    <zipfileset dir="../peach-scheduler-entity/target" prefix=""  excludes="*-sources.jar" includes="*.jar"/>
+                                    <zipfileset dir="../peach-scheduler-rest/target" prefix=""  excludes="*-sources.jar" includes="*.jar"/>
+                                    <zipfileset dir="../peach-scheduler-service/target" prefix=""  excludes="*-sources.jar" includes="*.jar"/>
+                                    <zipfileset dir="target" prefix="" excludes="*-sources.jar" includes="*.jar"/>
+                                </zip>
+                                <move file="target/scheduler-${project.version}.zip" tofile="../scheduler-${project.version}.zip" />
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+
+</project>

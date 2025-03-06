@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.peach.scheduler.dao.AutomaticTaskStatusDao">
+    <sql id="allColumn">
+        ID,                                               TASK_ID,                                          START_TIME,                                       LAST_EXE_TIME,
+        LAST_TOTAL_TIME,                                  TOTAL_COUNT,                                      ERR_COUNT,                                        OK_COUNT,
+        TASK_MESSAGE,                                     STATUS
+    </sql>
+
+    <sql id="allColumnAlias">
+        ID as id,                                         TASK_ID as taskId,                                START_TIME as startTime,                          LAST_EXE_TIME as lastExeTime,
+        LAST_TOTAL_TIME as lastTotalTime,                 TOTAL_COUNT as totalCount,                        ERR_COUNT as errCount,                            OK_COUNT as okCount,
+        TASK_MESSAGE as taskMessage,                      STATUS as status
+    </sql>
+
+    <sql id="allColumnValue">
+        #{id,jdbcType=VARCHAR},                 #{taskId,jdbcType=VARCHAR},             #{startTime,jdbcType=VARCHAR},          #{lastExeTime,jdbcType=VARCHAR},
+        #{lastTotalTime,jdbcType=INTEGER},      #{totalCount,jdbcType=INTEGER},         #{errCount,jdbcType=INTEGER},           #{okCount,jdbcType=INTEGER},
+        #{taskMessage,jdbcType=VARCHAR},        #{status,jdbcType=INTEGER}
+    </sql>
+
+    <sql id="itemAllColumnValue">
+        #{item.id,jdbcType=VARCHAR},            #{item.taskId,jdbcType=VARCHAR},        #{item.startTime,jdbcType=VARCHAR},     #{item.lastExeTime,jdbcType=VARCHAR},
+        #{item.lastTotalTime,jdbcType=INTEGER}, #{item.totalCount,jdbcType=INTEGER},    #{item.errCount,jdbcType=INTEGER},      #{item.okCount,jdbcType=INTEGER},
+        #{item.taskMessage,jdbcType=VARCHAR},   #{item.status,jdbcType=INTEGER}
+    </sql>
+
+    <sql id="allColumnSet">
+        <trim suffixOverrides=",">
+            <if test="taskId != null and taskId != ''">
+                TASK_ID = #{taskId,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null and startTime != ''">
+                START_TIME = #{startTime,jdbcType=VARCHAR},
+            </if>
+            <if test="lastExeTime != null and lastExeTime != ''">
+                LAST_EXE_TIME = #{lastExeTime,jdbcType=VARCHAR},
+            </if>
+            <if test="lastTotalTime != null">
+                LAST_TOTAL_TIME = #{lastTotalTime,jdbcType=INTEGER},
+            </if>
+            <if test="totalCount != null">
+                TOTAL_COUNT = #{totalCount,jdbcType=INTEGER},
+            </if>
+            <if test="errCount != null">
+                ERR_COUNT = #{errCount,jdbcType=INTEGER},
+            </if>
+            <if test="okCount != null">
+                OK_COUNT = #{okCount,jdbcType=INTEGER},
+            </if>
+            <if test="taskMessage != null and taskMessage != ''">
+                TASK_MESSAGE = #{taskMessage,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="updateSelectiveColumn">
+        <trim suffixOverrides=",">
+            <if test="taskId != null and taskId != ''">
+                TASK_ID,
+            </if>
+            <if test="startTime != null and startTime != ''">
+                START_TIME,
+            </if>
+            <if test="lastExeTime != null and lastExeTime != ''">
+                LAST_EXE_TIME,
+            </if>
+            <if test="lastTotalTime != null">
+                LAST_TOTAL_TIME,
+            </if>
+            <if test="totalCount != null">
+                TOTAL_COUNT,
+            </if>
+            <if test="errCount != null">
+                ERR_COUNT,
+            </if>
+            <if test="okCount != null">
+                OK_COUNT,
+            </if>
+            <if test="taskMessage != null and taskMessage != ''">
+                TASK_MESSAGE,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="updateSelectiveValue">
+        <trim suffixOverrides=",">
+            <if test="taskId != null and taskId != ''">
+                #{taskId,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null and startTime != ''">
+                #{startTime,jdbcType=VARCHAR},
+            </if>
+            <if test="lastExeTime != null and lastExeTime != ''">
+                #{lastExeTime,jdbcType=VARCHAR},
+            </if>
+            <if test="lastTotalTime != null">
+                #{lastTotalTime,jdbcType=INTEGER},
+            </if>
+            <if test="totalCount != null">
+                #{totalCount,jdbcType=INTEGER},
+            </if>
+            <if test="errCount != null">
+                #{errCount,jdbcType=INTEGER},
+            </if>
+            <if test="okCount != null">
+                #{okCount,jdbcType=INTEGER},
+            </if>
+            <if test="taskMessage != null and taskMessage != ''">
+                #{taskMessage,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="allColumnCond">
+        <if test="id != null and id != ''">
+            AND ID = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="taskId != null and taskId != ''">
+            AND TASK_ID = #{taskId,jdbcType=VARCHAR}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND START_TIME = #{startTime,jdbcType=VARCHAR}
+        </if>
+        <if test="lastExeTime != null and lastExeTime != ''">
+            AND LAST_EXE_TIME = #{lastExeTime,jdbcType=VARCHAR}
+        </if>
+        <if test="lastTotalTime != null">
+            AND LAST_TOTAL_TIME = #{lastTotalTime,jdbcType=INTEGER}
+        </if>
+        <if test="totalCount != null">
+            AND TOTAL_COUNT = #{totalCount,jdbcType=INTEGER}
+        </if>
+        <if test="errCount != null">
+            AND ERR_COUNT = #{errCount,jdbcType=INTEGER}
+        </if>
+        <if test="okCount != null">
+            AND OK_COUNT = #{okCount,jdbcType=INTEGER}
+        </if>
+        <if test="taskMessage != null and taskMessage != ''">
+            AND TASK_MESSAGE = #{taskMessage,jdbcType=VARCHAR}
+        </if>
+        <if test="status != null">
+            AND STATUS = #{status,jdbcType=INTEGER}
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.peach.scheduler.entity.AutomaticTaskStatusDO">
+        INSERT INTO AUTOMATIC_TASK_STATUS (
+        <include refid="allColumn" />
+        ) VALUES (
+        <include refid="allColumnValue" />
+        )
+    </insert>
+
+    <insert id="batchInsert" parameterType="com.peach.scheduler.entity.AutomaticTaskStatusDO">
+        INSERT INTO AUTOMATIC_TASK_STATUS (
+        <include refid="allColumn" />
+        ) VALUES
+        <foreach collection="list" index="index" item="item">
+            (<include refid="allColumnValue"/>)
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.peach.scheduler.entity.AutomaticTaskStatusDO">
+        UPDATE SET AUTOMATIC_TASK_STATUS
+        <include refid="allColumnSet" />
+        WHERE
+        <include refid="allColumnCond" />
+    </update>
+
+    <delete id="delById" parameterType="string">
+        DELETE FROM AUTOMATIC_TASK_STATUS
+        WHERE
+            ID = #{value,jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="delByIds" parameterType="java.util.List">
+        DELETE FROM AUTOMATIC_TASK_STATUS
+        WHERE ID IN
+        <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+            #{id,jdbcType=VARCHAR}
+        </foreach>
+    </delete>
+
+    <delete id="del" parameterType="com.peach.scheduler.entity.AutomaticTaskStatusDO">
+        DELETE FROM AUTOMATIC_TASK_STATUS
+        WHERE 1=1
+        <include refid="allColumnCond" />
+    </delete>
+
+    <update id="updateById" parameterType="java.lang.String">
+        UPDATE AUTOMATIC_TASK_STATUS SET
+        <include refid="allColumnSet" />
+        WHERE ID =  #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectById" parameterType="string" resultType="com.peach.scheduler.entity.AutomaticTaskStatusDO">
+        SELECT
+        <include refid="allColumnAlias" />
+        FROM AUTOMATIC_TASK_STATUS
+        WHERE ID = #{value,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByIds" parameterType="java.util.List" resultType="com.peach.scheduler.entity.AutomaticTaskStatusDO">
+        SELECT
+        <include refid="allColumnAlias" />
+        FROM AUTOMATIC_TASK_STATUS
+        WHERE ID IN
+        <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+            #{id,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+    <select id="select" parameterType="com.peach.scheduler.entity.AutomaticTaskStatusDO" resultType="com.peach.scheduler.entity.AutomaticTaskStatusDO">
+        SELECT
+        <include refid="allColumnAlias" />
+        FROM AUTOMATIC_TASK_STATUS
+        WHERE 1=1
+        <include refid="allColumnCond" />
+    </select>
+
+    <select id="count" parameterType="com.peach.scheduler.entity.AutomaticTaskStatusDO" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM AUTOMATIC_TASK_STATUS
+        WHERE 1=1
+        <include refid="allColumnCond" />
+    </select>
+</mapper>
