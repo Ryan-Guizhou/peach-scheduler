@@ -1,7 +1,10 @@
 package com.peach.scheduler.api;
 
-import com.peach.common.response.Response;
+import com.peach.common.response.PageResult;
 import com.peach.scheduler.entity.AutomaticTaskDO;
+import com.peach.scheduler.qo.AutomaticTaskQO;
+
+import java.util.Map;
 
 /**
  * @Author Mr Shu
@@ -10,47 +13,54 @@ import com.peach.scheduler.entity.AutomaticTaskDO;
  * @CreateTime 06 3月 2025 22:41
  */
 public interface IAutomaticTask {
+    
+    /**
+     * 查询自动任务列表
+     */
+    PageResult<AutomaticTaskDO> getTaskList(AutomaticTaskQO automaticTaskQO);
 
     /**
-     *
-     * 启动定时任务
+     * 根据task_id获取任务调度信息
      */
-    Response startJob(AutomaticTaskDO automaticTaskDO);
+    AutomaticTaskDO selectById(AutomaticTaskDO automaticTaskDO);
+
+    /**
+     * 根据id更新自动任务信息
+     */
+    void updateById(AutomaticTaskDO automaticTaskDO);
+
+    /**
+     * 启用定时任务
+     */
+    Map<String,String> startQuartz(AutomaticTaskDO automaticTask);
+
+    /**
+     * 删除定时任务
+     */
+    Map<String,String> deleteQuartz(AutomaticTaskDO automaticTask);
+
+    /**
+     * 立即执行定时任务
+     */
+    Map<String,String> immediateQuartz(AutomaticTaskDO automaticTask);
+
 
     /**
      *
      * 暂停定时任务
-     * @return Response
      */
-    Response pauseJob(AutomaticTaskDO automaticTaskDO);
-
-
-    /**
-     *
-     * 立即执行定时任务
-     * @return Response
-     */
-    Response doJob(AutomaticTaskDO automaticTaskDO);
+    void pauseQuartz(AutomaticTaskDO automaticTask);
 
     /**
      *
      * 重启定时任务
-     * @return Response
      */
-    Response resumeJob(AutomaticTaskDO automaticTaskDO);
+    void repauseQuartz(AutomaticTaskDO automaticTask);
 
     /**
      *
-     * 重启定时任务
-     * @return Response
+     * 添加定时任务
      */
-    Response deleteJob(AutomaticTaskDO automaticTaskDO);
-
-    /**
-     *
-     * 获取corn表达式
-     * @return Response
-     */
-    Response getCron(AutomaticTaskDO automaticTaskDO);
+    void addQuartz(AutomaticTaskDO automaticTask);
 
 }

@@ -3,8 +3,11 @@ package com.peach.scheduler.entity;
 import com.peach.common.generator.MapperGenerator;
 import lombok.Data;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.beanutils.PropertyUtils;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * @Author Mr Shu
@@ -97,6 +100,22 @@ public class AutomaticTaskDO implements Serializable {
     @Column(name = "SYS_ID")
     @ApiModelProperty(value = "所属模块")
     private String sysId;
+
+    /**
+     * 转换为Map
+     *
+     * @return
+     */
+    public Map toMap() {
+        try {
+            Map map = PropertyUtils.describe(this);
+            map.remove("class");
+            return map;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+    }
 
     public static void main(String[] args) {
         System.out.println(MapperGenerator.genMapper(AutomaticTaskDO.class));

@@ -8,7 +8,7 @@ import org.quartz.JobExecutionContext;
  * @Description //TODO
  * @CreateTime 06 3月 2025 00:02
  */
-public class TaskJob extends BaseJob{
+public class GenerRestJob extends BaseJob{
 
     @Override
     protected void executeInternal(JobExecutionContext context) {
