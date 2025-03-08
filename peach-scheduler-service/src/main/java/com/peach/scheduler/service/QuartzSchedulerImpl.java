@@ -83,10 +83,21 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
         JobKey jobKey = buildJobKey(automaticTaskDO);
         try {
             if (scheduler.checkExists(jobKey)){
+                // 检查任务是否正在执行
+                List<JobExecutionContext> currentJobs = scheduler.getCurrentlyExecutingJobs();
+                boolean isRunning = currentJobs.stream()
+                        .anyMatch(job -> job.getJobDetail().getKey().equals(jobKey));
+
+                if (isRunning) {
+                    resultMap.put("message", "任务正在执行中");
+                    resultMap.put("flag", "false");
+                    return resultMap;
+                }
+
+                // 触发任务执行
                 scheduler.triggerJob(jobKey);
-                resultMap.put("message","定时任务已成功触发执行");
-                resultMap.put("flag","true");
-                return resultMap;
+                resultMap.put("message", "定时任务已成功触发执行");
+                resultMap.put("flag", "true");
             }
             resultMap.put("message","该任务处于未开启状态");
             resultMap.put("flag","false");
@@ -142,6 +153,8 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
             if (scheduler.checkExists(jobKey)){
                 // 先暂停触发器
                 scheduler.pauseTrigger(triggerKey);
+                // 等待当前执行的任务完成
+                scheduler.interrupt(jobKey);
                 // 移除触发器
                 scheduler.unscheduleJob(triggerKey);
                 // 删除任务
