@@ -4,6 +4,7 @@ import com.peach.common.entity.BaseEntity;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @Author Mr Shu
@@ -16,5 +17,8 @@ public class AutomaticTaskQO extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -1979813656782894527L;
 
+    private String taskId;
+
+    private List<String> taskIdList;
 
 }

@@ -5,8 +5,10 @@ import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
 import org.quartz.TriggerListener;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Indexed;
 
 @Slf4j
+@Indexed
 @Component
 public class TaskTriggerListener implements TriggerListener {
 

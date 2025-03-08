@@ -21,7 +21,7 @@ public interface IQuartzScheduler {
     /**
      *
      * 暂停定时任务
-     * @return Response
+     * @return Map<String,String>
      */
     Map<String,String> pauseJob(AutomaticTaskDO automaticTaskDO);
 
@@ -29,31 +29,36 @@ public interface IQuartzScheduler {
     /**
      *
      * 立即执行定时任务
-     * @return Response
+     * @return Map<String,String>
      */
     Map<String,String> doJob(AutomaticTaskDO automaticTaskDO);
 
     /**
      *
      * 重启定时任务
-     * @return Response
+     * @return Map<String,String>
      */
     Map<String,String> resumeJob(AutomaticTaskDO automaticTaskDO);
 
     /**
      *
      * 重启定时任务
-     * @return Response
+     * @return Map<String,String>
      */
     Map<String,String> deleteJob(AutomaticTaskDO automaticTaskDO);
 
     /**
      *
      * 获取corn表达式
-     * @return Response
+     * @return Map<String,String>
      */
     String getCron(AutomaticTaskDO automaticTaskDO);
 
-    public Map<String, String> updateJob(AutomaticTaskDO automaticTaskDO) ;
+    /**
+     *
+     * 更新定时任务状态
+     * @return Map<String,String>
+     */
+    Map<String, String> updateSchedulerStatus(AutomaticTaskDO automaticTaskDO) ;
 
 }

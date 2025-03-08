@@ -1,16 +1,20 @@
 package com.peach.scheduler.listener;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.peach.scheduler.api.IQuartzScheduler;
 import com.peach.scheduler.entity.AutomaticTaskDO;
 import com.peach.scheduler.dao.AutomaticTaskDao;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Indexed;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Field;
 import java.util.Objects;
 
 @Slf4j
+@Indexed
 @Component
 public class TaskJobListener implements JobListener {
 
@@ -19,6 +23,8 @@ public class TaskJobListener implements JobListener {
 
     @Resource
     private IQuartzScheduler iQuartzScheduler;
+
+    private static final ObjectMapper _MAPPER =  new ObjectMapper();
 
     @Override
     public String getName() {
@@ -34,39 +40,24 @@ public class TaskJobListener implements JobListener {
 
         try {
             // 从数据库获取最新任务配置
-            AutomaticTaskDO latestTask = automaticTaskDao.selectById(taskId);
-            if (latestTask == null) {
+            AutomaticTaskDO existsAutomaticTask = automaticTaskDao.selectById(taskId);
+            if (existsAutomaticTask == null) {
                 log.warn("任务[{}]在数据库中不存在", taskId);
                 return;
             }
 
             // 检查任务配置是否发生变化
-            if (isTaskConfigChanged(jobDataMap, latestTask)) {
+            String jsonMap = _MAPPER.writeValueAsString(jobDataMap);
+            AutomaticTaskDO newAutomaticTask =  _MAPPER.readValue(jsonMap, AutomaticTaskDO.class);
+            if (!isTaskConfigChanged(newAutomaticTask, existsAutomaticTask)) {
                 log.info("任务[{}]配置发生变化,准备更新调度", taskId);
-                iQuartzScheduler.updateJob(latestTask);
+                iQuartzScheduler.updateSchedulerStatus(existsAutomaticTask);
             }
         } catch (Exception e) {
             log.error("检查任务配置变更失败", e);
         }
     }
 
-    /**
-     * 检查任务配置是否发生变化
-     */
-    private boolean isTaskConfigChanged(JobDataMap jobDataMap, AutomaticTaskDO latestTask) {
-        // 检查关键配置是否变化
-        if (!Objects.equals(jobDataMap.get("taskType"), latestTask.getTaskType())) {
-            return true;
-        }
-        if (!Objects.equals(jobDataMap.get("taskInterval"), latestTask.getTaskInterval())) {
-            return true;
-        }
-        if (!Objects.equals(jobDataMap.get("scheduleType"), latestTask.getScheduleType())) {
-            return true;
-        }
-        // 检查其他配置...
-        return false;
-    }
 
     @Override
     public void jobExecutionVetoed(JobExecutionContext context) {
@@ -79,5 +70,30 @@ public class TaskJobListener implements JobListener {
         // 任务执行完成后的处理
         JobDetail jobDetail = context.getJobDetail();
         log.info("任务[{}]执行完成", jobDetail.getKey());
+    }
+
+    /**
+     * 检查任务配置是否发生变化
+     */
+    public boolean isTaskConfigChanged(Object obj1, Object obj2) {
+        if (obj1 == obj2) return true;
+        if (obj1 == null || obj2 == null) return false;
+        if (!obj1.getClass().equals(obj2.getClass())) return false;
+
+        Field[] fields = obj1.getClass().getDeclaredFields();
+        try {
+            for (Field field : fields) {
+                field.setAccessible(true);
+                Object value1 = field.get(obj1);
+                Object value2 = field.get(obj2);
+                if (!Objects.equals(value1, value2)) {
+                    log.info("字段变化：" + field.getName() + " | 旧值：" + value1 + " | 新值：" + value2);
+                    return false;
+                }
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("反射异常", e);
+        }
+        return true;
     }
 }

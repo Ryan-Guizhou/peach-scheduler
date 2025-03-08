@@ -167,7 +167,7 @@
         <include refid="allColumn" />
         ) VALUES
         <foreach collection="list" index="index" item="item">
-            (<include refid="allColumnValue"/>)
+            (<include refid="itemAllColumnValue"/>)
         </foreach>
     </insert>
 
@@ -180,8 +180,7 @@
 
     <delete id="delById" parameterType="string">
         DELETE FROM AUTOMATIC_TASK_LOG
-        WHERE
-            ID = #{value,jdbcType=VARCHAR}
+        WHERE ID = #{value,jdbcType=VARCHAR}
     </delete>
 
     <delete id="delByIds" parameterType="java.util.List">
@@ -194,8 +193,9 @@
 
     <delete id="del" parameterType="com.peach.scheduler.entity.AutomaticTaskLogDO">
         DELETE FROM AUTOMATIC_TASK_LOG
-        WHERE 1=1
-        <include refid="allColumnCond" />
+        <where>
+            <include refid="allColumnCond" />
+        </where>
     </delete>
 
     <update id="updateById" parameterType="java.lang.String">
@@ -225,14 +225,16 @@
         SELECT
         <include refid="allColumnAlias" />
         FROM AUTOMATIC_TASK_LOG
-        WHERE 1=1
-        <include refid="allColumnCond" />
+        <where>
+            <include refid="allColumnCond" />
+        </where>
     </select>
 
     <select id="count" parameterType="com.peach.scheduler.entity.AutomaticTaskLogDO" resultType="java.lang.Integer">
         SELECT COUNT(1)
         FROM AUTOMATIC_TASK_LOG
-        WHERE 1=1
-        <include refid="allColumnCond" />
+        <where>
+            <include refid="allColumnCond" />
+        </where>
     </select>
 </mapper>

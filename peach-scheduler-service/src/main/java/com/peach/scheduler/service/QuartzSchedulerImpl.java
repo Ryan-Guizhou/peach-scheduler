@@ -1,22 +1,17 @@
 package com.peach.scheduler.service;
 
-import com.peach.common.response.Response;
+
 import com.peach.common.util.StringUtil;
 import com.peach.scheduler.GenerRestJob;
 import com.peach.scheduler.api.IQuartzScheduler;
 import com.peach.scheduler.constant.TaskConstant;
 import com.peach.scheduler.entity.AutomaticTaskDO;
-import com.peach.scheduler.listener.TaskJobListener;
-import com.peach.scheduler.listener.TaskTriggerListener;
+import com.peach.scheduler.exception.TaskException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
-import org.quartz.impl.matchers.GroupMatcher;
-import org.quartz.spi.MutableTrigger;
 import org.springframework.stereotype.Indexed;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,7 +31,6 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
 
     @Resource
     private Scheduler scheduler;
-
 
     @Override
     public Map<String,String> startJob(AutomaticTaskDO automaticTaskDO) throws Exception {
@@ -77,7 +71,7 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
         } catch (Exception e) {
             log.error("启动定时任务失败", e);
             resultMap.put("message", "启动定时任务失败: " + e.getMessage());
-            throw e;
+            throw new TaskException("启动定时任务失败: " , automaticTaskDO.getTaskId(), "startJob");
         }
         return resultMap;
     }
@@ -99,9 +93,7 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
             return resultMap;
         }catch (Exception ex){
             log.error("立即执行定时任务失败,jobKey:[{}]",jobKey,ex);
-            resultMap.put("message","立即执行定时任务失败");
-            resultMap.put("flag","false");
-            return resultMap;
+            throw new TaskException("立即执行定时任务失败: ",automaticTaskDO.getTaskId(),"doJob");
         }
     }
 
@@ -115,12 +107,11 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
                 resultMap.put("message","定时任务暂停成功");
                 return resultMap;
             }
-            resultMap.put("message","该任务已暂停");
+            resultMap.put("message","任务不存在，无法暂停");
             return resultMap;
         }catch (Exception ex){
             log.error("定时任务停用暂停,jobKey:[{}]",jobKey,ex);
-            resultMap.put("message","定时任务暂停失败");
-            return resultMap;
+            throw new TaskException("定时任务停用失败: ",automaticTaskDO.getTaskId(),"pauseJob");
         }
     }
 
@@ -138,8 +129,7 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
             return resultMap;
         }catch (Exception ex){
             log.error("定时任务重启暂停,jobKey:[{}]",jobKey,ex);
-            resultMap.put("message","定时任务重启失败");
-            return resultMap;
+            throw new TaskException("定时任务重启失败: ",automaticTaskDO.getTaskId(),"resumeJob");
         }
     }
 
@@ -165,8 +155,7 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
             return resultMap;
         } catch (Exception ex ) {
             log.error("定时任务停用失败,jobKey:[{}]",jobKey,ex);
-            resultMap.put("message","定时任务停用失败");
-            return resultMap;
+            throw new TaskException("定时任务停用失败: ",automaticTaskDO.getTaskId(),"deleteJob");
         }
     }
 
@@ -332,7 +321,7 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
     }
 
     @Override
-    public Map<String, String> updateJob(AutomaticTaskDO automaticTaskDO) {
+    public Map<String, String> updateSchedulerStatus(AutomaticTaskDO automaticTaskDO) {
         Map<String, String> resultMap = new HashMap<>();
         JobKey jobKey = buildJobKey(automaticTaskDO);
         
@@ -368,7 +357,7 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
         } catch (Exception e) {
             log.error("更新任务失败: [{}]", jobKey, e);
             resultMap.put("message", "任务更新失败: " + e.getMessage());
-            throw new RuntimeException("更新任务失败", e);
+            throw new TaskException("更新任务失败", automaticTaskDO.getTaskId(), "update");
         }
         
         return resultMap;

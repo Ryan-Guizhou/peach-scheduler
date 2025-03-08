@@ -36,15 +36,10 @@ public class AutomaticTaskStatusImpl implements IAutomaticTaskStatus {
 
     @Override
     public PageResult<AutomaticTaskStatusDO> getTaskStatusByTaskIds(AutomaticTaskStatusQO qo) {
-        PageInfo pageInfo = null;
-        try {
-            pageInfo = PageHelper.startPage(qo.getPageNum(), qo.getPageSize())
+        PageInfo pageInfo = PageHelper.startPage(qo.getPageNum(), qo.getPageSize())
                     .doSelectPageInfo(() -> {
                         automaticTaskStatusDao.selectByQO(qo);
                     });
-        }catch (Exception e){
-            log.error("getPaTaskStatusByTaskIds error:{}", e.getMessage());
-        }
         return new PageResult<AutomaticTaskStatusDO>()
                 .setTotal(pageInfo.getTotal())
                 .setResult(pageInfo.getList());

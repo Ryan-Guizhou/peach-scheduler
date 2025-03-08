@@ -299,7 +299,7 @@
         <include refid="allColumn" />
         ) VALUES
         <foreach collection="list" index="index" item="item">
-            (<include refid="allColumnValue"/>)
+            (<include refid="itemAllColumnValue"/>)
         </foreach>
     </insert>
 
@@ -327,8 +327,9 @@
 
     <delete id="del" parameterType="com.peach.scheduler.entity.AutomaticTaskDO">
         DELETE FROM AUTOMATIC_TASK
-        WHERE 1=1
-        <include refid="allColumnCond" />
+        <where>
+            <include refid="allColumnCond" />
+        </where>
     </delete>
 
     <update id="updateById" parameterType="java.lang.String">
@@ -358,15 +359,17 @@
         SELECT
         <include refid="allColumnAlias" />
         FROM AUTOMATIC_TASK
-        WHERE 1=1
-        <include refid="allColumnCond" />
+        <where>
+            <include refid="allColumnCond" />
+        </where>
     </select>
 
     <select id="count" parameterType="com.peach.scheduler.entity.AutomaticTaskDO" resultType="java.lang.Integer">
         SELECT COUNT(1)
         FROM AUTOMATIC_TASK
-        WHERE 1=1
-        <include refid="allColumnCond" />
+        <where>
+            <include refid="allColumnCond" />
+        </where>
     </select>
 
 
@@ -374,16 +377,17 @@
         SELECT
         <include refid="allColumnAlias" />
         FROM AUTOMATIC_TASK
-        WHERE 1=1
-        <if test="taskId != null and taskId != ''">
-            AND TASK_ID = #{taskId,jdbcType=VARCHAR}
-        </if>
-        <if test="taskIdList != null and taskIdList.size() > 0">
-            and TASK_ID IN
-            <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
-                #{id,jdbcType=VARCHAR}
-            </foreach>
-        </if>
+        <where>
+            <if test="taskId != null and taskId != ''">
+                AND TASK_ID = #{taskId,jdbcType=VARCHAR}
+            </if>
+            <if test="taskIdList != null and taskIdList.size() > 0">
+                and TASK_ID IN
+                <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+                    #{id,jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </where>
     </select>
 
     <select id="isSameTaskCode" resultType="java.lang.Integer">
