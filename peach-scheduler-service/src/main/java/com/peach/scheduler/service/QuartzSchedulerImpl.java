@@ -6,13 +6,17 @@ import com.peach.scheduler.GenerRestJob;
 import com.peach.scheduler.api.IQuartzScheduler;
 import com.peach.scheduler.constant.TaskConstant;
 import com.peach.scheduler.entity.AutomaticTaskDO;
+import com.peach.scheduler.listener.TaskJobListener;
+import com.peach.scheduler.listener.TaskTriggerListener;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.spi.MutableTrigger;
 import org.springframework.stereotype.Indexed;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,51 +37,49 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
     @Resource
     private Scheduler scheduler;
 
+
     @Override
-    public Map<String,String> startJob(AutomaticTaskDO automaticTaskDO) {
+    public Map<String,String> startJob(AutomaticTaskDO automaticTaskDO) throws Exception {
         Map<String, String> resultMap = new HashMap<>();
         try {
-           //1、构建jobKey
-           JobKey jobKey = buildJobKey(automaticTaskDO);
+            JobKey jobKey = buildJobKey(automaticTaskDO);
+            TriggerKey triggerKey = buildTriggerKey(automaticTaskDO);
 
-           //2、构建jobDetail
-           JobDetail existsJobDetail = scheduler.getJobDetail(jobKey);
-           if (existsJobDetail == null) {
-               Class jobClass = createClass(automaticTaskDO);
-               JobDetail jobDetail = JobBuilder.newJob(jobClass)
-                       .withIdentity(jobKey)
-                       .build();
-               // 设置参数
-               jobDetail.getJobDataMap().putAll(automaticTaskDO.toMap());
+            // 检查 Job 是否存在
+            JobDetail existsJobDetail = scheduler.getJobDetail(jobKey);
+            if (existsJobDetail == null) {
+                Class jobClass = createClass(automaticTaskDO);
+                JobDetail jobDetail = JobBuilder.newJob(jobClass)
+                        .withIdentity(jobKey)
+                        .storeDurably()
+                        .build();
+                jobDetail.getJobDataMap().putAll(automaticTaskDO.toMap());
 
-               //3、构建trigger 触发器 将作业和触发器都放到调度中
-               Integer taskType = automaticTaskDO.getTaskType();
-               if (taskType != null && taskType == TaskConstant.TASK_TYPE_ONE){
-                   Trigger trigger = getIntervalTrigger(automaticTaskDO);
-                   // 把作业和触发器注册到任务调度中
-                   scheduler.scheduleJob(jobDetail,trigger);
-               }
+                // 创建触发器
+                Trigger trigger = automaticTaskDO.getTaskType() == TaskConstant.TASK_TYPE_ONE
+                        ? getIntervalTrigger(automaticTaskDO)
+                        : getRegularTrigger(automaticTaskDO);
 
-               // 如果是定期执行
-               if (taskType != null && taskType == TaskConstant.TASK_TYPE_TWO){
-                   // 把作业和触发器注册到任务调度中
-                   Trigger trigger = getRegularTrigger(automaticTaskDO);
-                   scheduler.scheduleJob(jobDetail,trigger);
-               }
+                // 确保使用相同的 triggerKey
+                trigger = trigger.getTriggerBuilder()
+                        .withIdentity(triggerKey)
+                        .forJob(jobKey)  // 显式指定 JobKey
+                        .build();
 
-               // 4、启动调度
-               scheduler.start();
-               resultMap.put("message","定时任务启用成功");
-           }else {
-               log.info("jobKey:[{}] has been started!",jobKey);
-               resultMap.put("message","定时任务已经启动，无需再次启动");
-           }
-           return resultMap;
-       }catch (Exception e){
-           log.error("定时任务启用失败");
-            resultMap.put("message","定时任务启用失败");
-            return resultMap;
-       }
+                scheduler.scheduleJob(jobDetail, trigger);
+                resultMap.put("message", "定时任务启用成功");
+            } else {
+                log.info("jobKey:[{}] has been started!", jobKey);
+                resultMap.put("message", "定时任务已经启动，无需再次启动");
+            }
+            
+            scheduler.start();
+        } catch (Exception e) {
+            log.error("启动定时任务失败", e);
+            resultMap.put("message", "启动定时任务失败: " + e.getMessage());
+            throw e;
+        }
+        return resultMap;
     }
 
 
@@ -145,12 +147,19 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
     public Map<String,String> deleteJob(AutomaticTaskDO automaticTaskDO) {
         Map<String, String> resultMap = new HashMap<>();
         JobKey jobKey = buildJobKey(automaticTaskDO);
+        TriggerKey triggerKey = buildTriggerKey(automaticTaskDO);
         try {
             if (scheduler.checkExists(jobKey)){
+                // 先暂停触发器
+                scheduler.pauseTrigger(triggerKey);
+                // 移除触发器
+                scheduler.unscheduleJob(triggerKey);
+                // 删除任务
                 boolean flag = scheduler.deleteJob(jobKey);
-                String msg = flag == true ? "定时任务停用成功" : "定时任务停用失败";
-                resultMap.put("message",msg);
-                return resultMap;
+
+                String msg = flag ? "定时任务停用成功" : "定时任务停用失败";
+                resultMap.put("message", msg);
+                log.info("任务[{}]已停用,触发器[{}]已删除", jobKey, triggerKey);
             }
             resultMap.put("message","该任务已停用");
             return resultMap;
@@ -213,9 +222,9 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
      */
     private Class createClass(AutomaticTaskDO automaticTaskDO) throws Exception{
         String className = automaticTaskDO.getTaskClass();
-        boolean isExternalJob = StringUtil.isNotEmpty(className) && className.startsWith(TaskConstant.TASK_CLASS_PREFIX_HTTP)
-                && className.startsWith(TaskConstant.TASK_CLASS_PREFIX_HTTPS);
-        return !isExternalJob ? GenerRestJob.class : Class.forName(className);
+        boolean isExternalJob = StringUtil.isNotEmpty(className) &&
+                (className.startsWith(TaskConstant.TASK_CLASS_PREFIX_HTTP) || className.startsWith(TaskConstant.TASK_CLASS_PREFIX_HTTPS));
+        return isExternalJob ? GenerRestJob.class : Class.forName(className);
     }
 
     /**
@@ -239,6 +248,7 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
         SimpleScheduleBuilder simpleScheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 .withIntervalInSeconds(taskInterval)
                 .withRepeatCount(Math.max(runTimes - 1, 0)) // 避免负数问题
+                .withMisfireHandlingInstructionFireNow()
                 .withMisfireHandlingInstructionNextWithRemainingCount();// 避免任务丢失
 
         SimpleTrigger simpleTrigger = TriggerBuilder.newTrigger()
@@ -306,7 +316,7 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
      */
     private JobKey buildJobKey(AutomaticTaskDO automaticTaskDO){
         String job = automaticTaskDO.getTaskId();
-        String group = StringUtil.getStringValue(automaticTaskDO.getTaskType());
+        String group = String.valueOf(automaticTaskDO.getTaskType());
         return JobKey.jobKey(job,group);
     }
 
@@ -317,9 +327,53 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
      */
     private TriggerKey buildTriggerKey(AutomaticTaskDO automaticTaskDO){
         String job = automaticTaskDO.getTaskId();
-        String group = StringUtil.getStringValue(automaticTaskDO.getTaskType());
+        String group = String.valueOf(automaticTaskDO.getTaskType());
         return TriggerKey.triggerKey(job,group);
     }
+
+    @Override
+    public Map<String, String> updateJob(AutomaticTaskDO automaticTaskDO) {
+        Map<String, String> resultMap = new HashMap<>();
+        JobKey jobKey = buildJobKey(automaticTaskDO);
+        
+        try {
+            // 先检查 Job 是否存在
+            if (!scheduler.checkExists(jobKey)) {
+                // 如果 Job 不存在，直接创建新的
+                return startJob(automaticTaskDO);
+            }
+
+            // 获取当前的 JobDetail
+            JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+            // 更新 JobDataMap
+            jobDetail.getJobDataMap().putAll(automaticTaskDO.toMap());
+
+            // 创建新的触发器
+            TriggerKey triggerKey = buildTriggerKey(automaticTaskDO);
+            Trigger newTrigger = (automaticTaskDO.getTaskType() == TaskConstant.TASK_TYPE_ONE
+                    ? getIntervalTrigger(automaticTaskDO)
+                    : getRegularTrigger(automaticTaskDO))
+                    .getTriggerBuilder()
+                    .withIdentity(triggerKey)
+                    .forJob(jobKey)
+                    .build();
+
+            // 删除旧的触发器并添加新的
+            scheduler.unscheduleJob(triggerKey);
+            scheduler.scheduleJob(newTrigger);
+            
+            resultMap.put("message", "任务更新成功");
+            log.info("任务[{}]更新成功", automaticTaskDO.getTaskId());
+            
+        } catch (Exception e) {
+            log.error("更新任务失败: [{}]", jobKey, e);
+            resultMap.put("message", "任务更新失败: " + e.getMessage());
+            throw new RuntimeException("更新任务失败", e);
+        }
+        
+        return resultMap;
+    }
+
 
 
 

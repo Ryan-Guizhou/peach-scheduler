@@ -18,16 +18,23 @@ import com.peach.scheduler.constant.TaskEnum;
 import com.peach.scheduler.dao.AutomaticTaskDao;
 import com.peach.scheduler.entity.AutomaticTaskDO;
 import com.peach.scheduler.entity.AutomaticTaskStatusDO;
+import com.peach.scheduler.event.TaskConfigChangeEvent;
+import com.peach.scheduler.listener.TaskJobListener;
+import com.peach.scheduler.listener.TaskTriggerListener;
 import com.peach.scheduler.qo.AutomaticTaskQO;
 import com.peach.scheduler.qo.AutomaticTaskStatusQO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.quartz.SchedulerException;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Indexed;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -54,6 +61,9 @@ public class AutomaticTaskImpl implements IAutomaticTask, ApplicationRunner {
 
     @Resource
     private IQuartzScheduler iQuartzScheduler;
+
+    @Resource
+    private ApplicationEventPublisher eventPublisher;
 
     /**
      * 是否启用定时任务 run 启动
@@ -90,7 +100,8 @@ public class AutomaticTaskImpl implements IAutomaticTask, ApplicationRunner {
                 }
                 AutomaticTaskStatusDO automaticTaskStatusDO = new AutomaticTaskStatusDO();
                 automaticTaskStatusDO.setTaskId(automaticTaskDO.getTaskId());
-                automaticTaskStatusDO.setStatus(2);
+                automaticTaskStatusDO.setStatus(TaskEnum.TaskStatusEnum.RUNNING.getCode());
+                automaticTaskStatusDO.setId(IDGenerator.UUID());
                 allTaskStatusList.add(automaticTaskStatusDO);
             }
         }
@@ -121,7 +132,12 @@ public class AutomaticTaskImpl implements IAutomaticTask, ApplicationRunner {
 
     @Override
     public void updateById(AutomaticTaskDO automaticTaskDO) {
-        automaticTaskDao.updateById(automaticTaskDO.getTaskId());
+        // 更新数据库
+        automaticTaskDao.updateById(automaticTaskDO);
+
+        AutomaticTaskDO newAutomaticTaskDO = automaticTaskDao.selectById(automaticTaskDO.getTaskId());
+        // 发布任务配置变更事件
+        eventPublisher.publishEvent(new TaskConfigChangeEvent(this, newAutomaticTaskDO));
     }
 
     @Override
@@ -135,7 +151,12 @@ public class AutomaticTaskImpl implements IAutomaticTask, ApplicationRunner {
         }
         automaticTaskDO.setIsEnabled(TaskConstant.TASK_ENABLE_STATUS_TRUE);
         automaticTaskDao.update(automaticTaskDO);
-        Map<String, String> resultMap = iQuartzScheduler.startJob(automaticTaskDO);
+        Map<String, String> resultMap = null;
+        try{
+            resultMap = iQuartzScheduler.startJob(automaticTaskDO);
+        }catch (Exception ex){
+            log.error("任务启动失败");
+        }
         AutomaticTaskStatusDO automaticTaskStatusDO =   new AutomaticTaskStatusDO();
         automaticTaskStatusDO.setTaskId(automaticTaskDO.getTaskId());
         automaticTaskStatusDO.setStatus(TaskEnum.TaskStatusEnum.RUNNING.getCode());
@@ -154,7 +175,8 @@ public class AutomaticTaskImpl implements IAutomaticTask, ApplicationRunner {
         }
 
        automaticTaskDO.setIsEnabled(TaskConstant.TASK_ENABLE_STATUS_FALSE);
-       automaticTaskDao.update(automaticTaskDO);
+       automaticTaskDao.updateById(automaticTaskDO);
+       iQuartzScheduler.deleteJob(automaticTaskDO);
         AutomaticTaskStatusDO automaticTaskStatusDO = new AutomaticTaskStatusDO();
         automaticTaskStatusDO.setTaskId(automaticTaskDO.getTaskId());
         automaticTaskStatusDO.setStatus(TaskEnum.TaskStatusEnum.UNSTART.getCode());
@@ -179,7 +201,7 @@ public class AutomaticTaskImpl implements IAutomaticTask, ApplicationRunner {
         }
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         long startTime = System.currentTimeMillis();
-        resultMap = iQuartzScheduler.doJob(automaticTask);
+        resultMap = iQuartzScheduler.doJob(automaticTaskDO);
         log.info("任务调用任务立即执行=>resultMap:[{}]", JSON.toJSON(resultMap));
         long endTime = System.currentTimeMillis();
         // 2、记录任务的状态
@@ -196,6 +218,7 @@ public class AutomaticTaskImpl implements IAutomaticTask, ApplicationRunner {
                 automaticTaskStatusDO.setLastTotalTime(lastTotalTime.intValue());
                 automaticTaskStatusDO.setTotalCount(ts.getTotalCount() == null ? 1 : ts.getTotalCount() + 1);
                 automaticTaskStatusDO.setOkCount(ts.getOkCount() == null ? 1 : ts.getOkCount() + 1);
+                automaticTaskStatusDO.setId(ts.getId());
                 iAutomaticTaskStatus.update(automaticTaskStatusDO);
             }
         }
@@ -237,7 +260,11 @@ public class AutomaticTaskImpl implements IAutomaticTask, ApplicationRunner {
 
         // 如果全局开关是 "run"，并且该任务是启用状态，则立即注册到 Quartz
         if (TaskConstant.TASK_STATUS.equalsIgnoreCase(autoTaskStatus) && automaticTask.getIsEnabled() == PubCommonConst.LOGIC_TRUE) {
-            iQuartzScheduler.startJob(automaticTask);
+           try {
+               iQuartzScheduler.startJob(automaticTask);
+           } catch (Exception e) {
+               throw new RuntimeException(e);
+           }
         }
     }
 
@@ -261,6 +288,7 @@ public class AutomaticTaskImpl implements IAutomaticTask, ApplicationRunner {
             automaticTaskStatusDO.setId(IDGenerator.UUID());
             automaticTaskStatusDO.setOkCount(1);
             automaticTaskStatusDO.setTotalCount(1);
+            automaticTaskStatusDO.setTaskId(statusDO.getTaskId());
             iAutomaticTaskStatus.insert(automaticTaskStatusDO);
         }
     }

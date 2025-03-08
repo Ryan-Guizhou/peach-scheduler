@@ -2,6 +2,8 @@ package com.peach.scheduler;
 
 import com.peach.scheduler.datasource.DataSourceProperties;
 import com.peach.scheduler.factory.PeachJobFactory;
+import com.peach.scheduler.listener.TaskJobListener;
+import com.peach.scheduler.listener.TaskTriggerListener;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -9,8 +11,8 @@ import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.boot.Banner;
@@ -21,8 +23,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -139,9 +139,17 @@ public class PeachSchedulerApplication implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnProperty(prefix = "peach-scheduler",name = "cluster" ,havingValue = "false" ,matchIfMissing = true)
-    public Scheduler scheduler(PeachJobFactory peachJobFactory) throws Exception {
+    public Scheduler scheduler(PeachJobFactory peachJobFactory,TaskJobListener jobListener,TaskTriggerListener triggerListener) throws Exception {
         Scheduler scheduler =  StdSchedulerFactory.getDefaultScheduler();
         scheduler.setJobFactory(peachJobFactory);
+        scheduler.getListenerManager().addJobListener(
+                jobListener,
+                GroupMatcher.anyGroup()
+        );
+        scheduler.getListenerManager().addTriggerListener(
+                triggerListener,
+                GroupMatcher.anyGroup()
+        );
         return scheduler;
     }
 

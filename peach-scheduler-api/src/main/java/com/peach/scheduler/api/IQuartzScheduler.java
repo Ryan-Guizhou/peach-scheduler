@@ -16,7 +16,7 @@ public interface IQuartzScheduler {
      *
      * 启动定时任务
      */
-    Map<String,String> startJob(AutomaticTaskDO automaticTaskDO);
+    Map<String,String> startJob(AutomaticTaskDO automaticTaskDO) throws Exception;
 
     /**
      *
@@ -53,5 +53,7 @@ public interface IQuartzScheduler {
      * @return Response
      */
     String getCron(AutomaticTaskDO automaticTaskDO);
+
+    public Map<String, String> updateJob(AutomaticTaskDO automaticTaskDO) ;
 
 }

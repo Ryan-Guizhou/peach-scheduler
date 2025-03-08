@@ -304,10 +304,11 @@
     </insert>
 
     <update id="update" parameterType="com.peach.scheduler.entity.AutomaticTaskDO">
-        UPDATE SET AUTOMATIC_TASK
+        UPDATE AUTOMATIC_TASK SET
         <include refid="allColumnSet" />
-        WHERE
-        <include refid="allColumnCond" />
+        <where>
+            <include refid="allColumnCond" />
+        </where>
     </update>
 
     <delete id="delById" parameterType="string">
