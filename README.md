@@ -3,7 +3,7 @@
 # Peach Scheduler - 轻量级分布式任务调度系统
 
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
-[![GitHub Stars](https://img.shields.io/github/stars/peach-scheduler/peach-scheduler.svg?style=social&label=Star&maxAge=2592000)]
+[![GitHub Stars](https://img.shields.io/github/stars/peach-scheduler/peach-scheduler.svg?style=social&label=Star&maxAge=2592000)](https://github.com/peach-scheduler/peach-scheduler/stargazers)
 
 Peach Scheduler 是一个基于 Spring Boot 和 Quartz 构建的轻量级分布式任务调度系统。它提供了强大的任务管理能力,同时保持了简单易用的特性。
 
