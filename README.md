@@ -87,7 +87,7 @@ public class MyJobListener implements JobListener {
 
 ## 📋 待开发功能
 
-- [ ] 任务执行日志追踪
+- [√] 任务执行日志追踪
 - [ ] 任务依赖关系管理
 - [ ] 任务优先级管理
 - [ ] 任务执行资源隔离
@@ -102,7 +102,7 @@ public class MyJobListener implements JobListener {
 
 ## 📞 技术支持
 
-- 邮箱: support@peachscheduler.com
+- 邮箱: huanhuanshu48@gmail.com
 - 文档: [在线文档](https://docs.peachscheduler.com)
 - 问题: [Issue 追踪](https://github.com/peachscheduler/issues)
 
@@ -173,7 +173,7 @@ java -jar peach-scheduler-launch/target/peach-scheduler-launch.jar
 
 ## 📄 开源协议
 
-本项目采用 [Apache 2.0 协议](LICENSE)。欢迎任何形式的贡献！
+本项目采用 [Apache 2.0 协议](LICENSE)。
 
 ## 🔗 相关资源
 
