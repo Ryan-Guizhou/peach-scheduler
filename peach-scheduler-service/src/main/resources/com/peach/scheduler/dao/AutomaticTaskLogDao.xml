@@ -2,27 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.peach.scheduler.dao.AutomaticTaskLogDao">
     <sql id="allColumn">
-        ID,                                               TASK_ID,                                          TASK_CODE,                                        TASK_NAME,
-        TASK_DESC,                                        OPT_CODE,                                         OPT_NAME,                                         OPT_USER_ID,
-        OPT_USER_NAME,                                    OPT_TIME
+        LOG_ID,                                           TASK_ID,                                          TASK_NAME,                                        START_TIME,
+        END_TIME,                                         EXECUTION_TIME,                                   STATUS,                                           ERROR_MSG,
+        TRACE_ID,                                         PARAMS,                                           RESULT,                                           OPT_USER_ID,
+        OPT_USER_NAME
     </sql>
 
     <sql id="allColumnAlias">
-        ID as id,                                         TASK_ID as taskId,                                TASK_CODE as taskCode,                            TASK_NAME as taskName,
-        TASK_DESC as taskDesc,                            OPT_CODE as optCode,                              OPT_NAME as optName,                              OPT_USER_ID as optUserId,
-        OPT_USER_NAME as optUserName,                     OPT_TIME as optTime
+        LOG_ID as logId,                                  TASK_ID as taskId,                                TASK_NAME as taskName,                            START_TIME as startTime,
+        END_TIME as endTime,                              EXECUTION_TIME as executionTime,                  STATUS as status,                                 ERROR_MSG as errorMsg,
+        TRACE_ID as traceId,                              PARAMS as params,                                 RESULT as result,                                 OPT_USER_ID as optUserId,
+        OPT_USER_NAME as optUserName
     </sql>
 
     <sql id="allColumnValue">
-        #{id,jdbcType=VARCHAR},                 #{taskId,jdbcType=VARCHAR},             #{taskCode,jdbcType=VARCHAR},           #{taskName,jdbcType=VARCHAR},
-        #{taskDesc,jdbcType=VARCHAR},           #{optCode,jdbcType=VARCHAR},            #{optName,jdbcType=VARCHAR},            #{optUserId,jdbcType=VARCHAR},
-        #{optUserName,jdbcType=VARCHAR},        #{optTime,jdbcType=VARCHAR}
+        #{logId,jdbcType=VARCHAR},              #{taskId,jdbcType=VARCHAR},             #{taskName,jdbcType=VARCHAR},           #{startTime,jdbcType=VARCHAR},
+        #{endTime,jdbcType=VARCHAR},            #{executionTime,jdbcType=BIGINT},       #{status,jdbcType=VARCHAR},             #{errorMsg,jdbcType=VARCHAR},
+        #{traceId,jdbcType=VARCHAR},            #{params,jdbcType=VARCHAR},             #{result,jdbcType=VARCHAR},             #{optUserId,jdbcType=VARCHAR},
+        #{optUserName,jdbcType=VARCHAR}
     </sql>
 
     <sql id="itemAllColumnValue">
-        #{item.id,jdbcType=VARCHAR},            #{item.taskId,jdbcType=VARCHAR},        #{item.taskCode,jdbcType=VARCHAR},      #{item.taskName,jdbcType=VARCHAR},
-        #{item.taskDesc,jdbcType=VARCHAR},      #{item.optCode,jdbcType=VARCHAR},       #{item.optName,jdbcType=VARCHAR},       #{item.optUserId,jdbcType=VARCHAR},
-        #{item.optUserName,jdbcType=VARCHAR},   #{item.optTime,jdbcType=VARCHAR}
+        #{item.logId,jdbcType=VARCHAR},         #{item.taskId,jdbcType=VARCHAR},        #{item.taskName,jdbcType=VARCHAR},      #{item.startTime,jdbcType=VARCHAR},
+        #{item.endTime,jdbcType=VARCHAR},       #{item.executionTime,jdbcType=BIGINT},  #{item.status,jdbcType=VARCHAR},        #{item.errorMsg,jdbcType=VARCHAR},
+        #{item.traceId,jdbcType=VARCHAR},       #{item.params,jdbcType=VARCHAR},        #{item.result,jdbcType=VARCHAR},        #{item.optUserId,jdbcType=VARCHAR},
+        #{item.optUserName,jdbcType=VARCHAR}
     </sql>
 
     <sql id="allColumnSet">
@@ -30,29 +34,38 @@
             <if test="taskId != null and taskId != ''">
                 TASK_ID = #{taskId,jdbcType=VARCHAR},
             </if>
-            <if test="taskCode != null and taskCode != ''">
-                TASK_CODE = #{taskCode,jdbcType=VARCHAR},
-            </if>
             <if test="taskName != null and taskName != ''">
                 TASK_NAME = #{taskName,jdbcType=VARCHAR},
             </if>
-            <if test="taskDesc != null and taskDesc != ''">
-                TASK_DESC = #{taskDesc,jdbcType=VARCHAR},
+            <if test="startTime != null and startTime != ''">
+                START_TIME = #{startTime,jdbcType=VARCHAR},
             </if>
-            <if test="optCode != null and optCode != ''">
-                OPT_CODE = #{optCode,jdbcType=VARCHAR},
+            <if test="endTime != null and endTime != ''">
+                END_TIME = #{endTime,jdbcType=VARCHAR},
             </if>
-            <if test="optName != null and optName != ''">
-                OPT_NAME = #{optName,jdbcType=VARCHAR},
+            <if test="executionTime != null">
+                EXECUTION_TIME = #{executionTime,jdbcType=BIGINT},
+            </if>
+            <if test="status != null and status != ''">
+                STATUS = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="errorMsg != null and errorMsg != ''">
+                ERROR_MSG = #{errorMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="traceId != null and traceId != ''">
+                TRACE_ID = #{traceId,jdbcType=VARCHAR},
+            </if>
+            <if test="params != null and params != ''">
+                PARAMS = #{params,jdbcType=VARCHAR},
+            </if>
+            <if test="result != null and result != ''">
+                RESULT = #{result,jdbcType=VARCHAR},
             </if>
             <if test="optUserId != null and optUserId != ''">
                 OPT_USER_ID = #{optUserId,jdbcType=VARCHAR},
             </if>
             <if test="optUserName != null and optUserName != ''">
                 OPT_USER_NAME = #{optUserName,jdbcType=VARCHAR},
-            </if>
-            <if test="optTime != null and optTime != ''">
-                OPT_TIME = #{optTime,jdbcType=VARCHAR},
             </if>
         </trim>
     </sql>
@@ -62,29 +75,38 @@
             <if test="taskId != null and taskId != ''">
                 TASK_ID,
             </if>
-            <if test="taskCode != null and taskCode != ''">
-                TASK_CODE,
-            </if>
             <if test="taskName != null and taskName != ''">
                 TASK_NAME,
             </if>
-            <if test="taskDesc != null and taskDesc != ''">
-                TASK_DESC,
+            <if test="startTime != null and startTime != ''">
+                START_TIME,
             </if>
-            <if test="optCode != null and optCode != ''">
-                OPT_CODE,
+            <if test="endTime != null and endTime != ''">
+                END_TIME,
             </if>
-            <if test="optName != null and optName != ''">
-                OPT_NAME,
+            <if test="executionTime != null">
+                EXECUTION_TIME,
+            </if>
+            <if test="status != null and status != ''">
+                STATUS,
+            </if>
+            <if test="errorMsg != null and errorMsg != ''">
+                ERROR_MSG,
+            </if>
+            <if test="traceId != null and traceId != ''">
+                TRACE_ID,
+            </if>
+            <if test="params != null and params != ''">
+                PARAMS,
+            </if>
+            <if test="result != null and result != ''">
+                RESULT,
             </if>
             <if test="optUserId != null and optUserId != ''">
                 OPT_USER_ID,
             </if>
             <if test="optUserName != null and optUserName != ''">
                 OPT_USER_NAME,
-            </if>
-            <if test="optTime != null and optTime != ''">
-                OPT_TIME,
             </if>
         </trim>
     </sql>
@@ -94,20 +116,32 @@
             <if test="taskId != null and taskId != ''">
                 #{taskId,jdbcType=VARCHAR},
             </if>
-            <if test="taskCode != null and taskCode != ''">
-                #{taskCode,jdbcType=VARCHAR},
-            </if>
             <if test="taskName != null and taskName != ''">
                 #{taskName,jdbcType=VARCHAR},
             </if>
-            <if test="taskDesc != null and taskDesc != ''">
-                #{taskDesc,jdbcType=VARCHAR},
+            <if test="startTime != null and startTime != ''">
+                #{startTime,jdbcType=VARCHAR},
             </if>
-            <if test="optCode != null and optCode != ''">
-                #{optCode,jdbcType=VARCHAR},
+            <if test="endTime != null and endTime != ''">
+                #{endTime,jdbcType=VARCHAR},
             </if>
-            <if test="optName != null and optName != ''">
-                #{optName,jdbcType=VARCHAR},
+            <if test="executionTime != null">
+                #{executionTime,jdbcType=BIGINT},
+            </if>
+            <if test="status != null and status != ''">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="errorMsg != null and errorMsg != ''">
+                #{errorMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="traceId != null and traceId != ''">
+                #{traceId,jdbcType=VARCHAR},
+            </if>
+            <if test="params != null and params != ''">
+                #{params,jdbcType=VARCHAR},
+            </if>
+            <if test="result != null and result != ''">
+                #{result,jdbcType=VARCHAR},
             </if>
             <if test="optUserId != null and optUserId != ''">
                 #{optUserId,jdbcType=VARCHAR},
@@ -115,33 +149,42 @@
             <if test="optUserName != null and optUserName != ''">
                 #{optUserName,jdbcType=VARCHAR},
             </if>
-            <if test="optTime != null and optTime != ''">
-                #{optTime,jdbcType=VARCHAR},
-            </if>
         </trim>
     </sql>
 
     <sql id="allColumnCond">
-        <if test="id != null and id != ''">
-            AND ID = #{id,jdbcType=VARCHAR}
+        <if test="logId != null and logId != ''">
+            AND LOG_ID = #{logId,jdbcType=VARCHAR}
         </if>
         <if test="taskId != null and taskId != ''">
             AND TASK_ID = #{taskId,jdbcType=VARCHAR}
         </if>
-        <if test="taskCode != null and taskCode != ''">
-            AND TASK_CODE = #{taskCode,jdbcType=VARCHAR}
-        </if>
         <if test="taskName != null and taskName != ''">
             AND TASK_NAME = #{taskName,jdbcType=VARCHAR}
         </if>
-        <if test="taskDesc != null and taskDesc != ''">
-            AND TASK_DESC = #{taskDesc,jdbcType=VARCHAR}
+        <if test="startTime != null and startTime != ''">
+            AND START_TIME = #{startTime,jdbcType=VARCHAR}
         </if>
-        <if test="optCode != null and optCode != ''">
-            AND OPT_CODE = #{optCode,jdbcType=VARCHAR}
+        <if test="endTime != null and endTime != ''">
+            AND END_TIME = #{endTime,jdbcType=VARCHAR}
         </if>
-        <if test="optName != null and optName != ''">
-            AND OPT_NAME = #{optName,jdbcType=VARCHAR}
+        <if test="executionTime != null">
+            AND EXECUTION_TIME = #{executionTime,jdbcType=BIGINT}
+        </if>
+        <if test="status != null and status != ''">
+            AND STATUS = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="errorMsg != null and errorMsg != ''">
+            AND ERROR_MSG = #{errorMsg,jdbcType=VARCHAR}
+        </if>
+        <if test="traceId != null and traceId != ''">
+            AND TRACE_ID = #{traceId,jdbcType=VARCHAR}
+        </if>
+        <if test="params != null and params != ''">
+            AND PARAMS = #{params,jdbcType=VARCHAR}
+        </if>
+        <if test="result != null and result != ''">
+            AND RESULT = #{result,jdbcType=VARCHAR}
         </if>
         <if test="optUserId != null and optUserId != ''">
             AND OPT_USER_ID = #{optUserId,jdbcType=VARCHAR}
@@ -149,9 +192,11 @@
         <if test="optUserName != null and optUserName != ''">
             AND OPT_USER_NAME = #{optUserName,jdbcType=VARCHAR}
         </if>
-        <if test="optTime != null and optTime != ''">
-            AND OPT_TIME = #{optTime,jdbcType=VARCHAR}
-        </if>
+    </sql>
+
+    <!-- 定义时间格式常量 -->
+    <sql id="DATE_FORMAT">
+        '%Y-%m-%d %H:%i:%s'
     </sql>
 
     <insert id="insert" parameterType="com.peach.scheduler.entity.AutomaticTaskLogDO">
@@ -172,20 +217,21 @@
     </insert>
 
     <update id="update" parameterType="com.peach.scheduler.entity.AutomaticTaskLogDO">
-        UPDATE SET AUTOMATIC_TASK_LOG
+        UPDATE AUTOMATIC_TASK_LOG SET
         <include refid="allColumnSet" />
-        WHERE
-        <include refid="allColumnCond" />
+        <where>
+            <include refid="allColumnCond" />
+        </where>
     </update>
 
     <delete id="delById" parameterType="string">
         DELETE FROM AUTOMATIC_TASK_LOG
-        WHERE ID = #{value,jdbcType=VARCHAR}
+        WHERE LOG_ID = #{value,jdbcType=VARCHAR}
     </delete>
 
     <delete id="delByIds" parameterType="java.util.List">
         DELETE FROM AUTOMATIC_TASK_LOG
-        WHERE ID IN
+        WHERE LOG_ID IN
         <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
             #{id,jdbcType=VARCHAR}
         </foreach>
@@ -201,21 +247,21 @@
     <update id="updateById" parameterType="java.lang.String">
         UPDATE AUTOMATIC_TASK_LOG SET
         <include refid="allColumnSet" />
-        WHERE ID =  #{id,jdbcType=VARCHAR}
+        WHERE LOG_ID =  #{logId,jdbcType=VARCHAR}
     </update>
 
     <select id="selectById" parameterType="string" resultType="com.peach.scheduler.entity.AutomaticTaskLogDO">
         SELECT
         <include refid="allColumnAlias" />
         FROM AUTOMATIC_TASK_LOG
-        WHERE ID = #{value,jdbcType=VARCHAR}
+        WHERE LOG_ID = #{value,jdbcType=VARCHAR}
     </select>
 
     <select id="selectByIds" parameterType="java.util.List" resultType="com.peach.scheduler.entity.AutomaticTaskLogDO">
         SELECT
         <include refid="allColumnAlias" />
         FROM AUTOMATIC_TASK_LOG
-        WHERE ID IN
+        WHERE LOG_ID IN
         <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
             #{id,jdbcType=VARCHAR}
         </foreach>
@@ -237,4 +283,59 @@
             <include refid="allColumnCond" />
         </where>
     </select>
+
+    <select id="selectByTaskId" resultType="com.peach.scheduler.entity.AutomaticTaskLogDO">
+        SELECT
+        <include refid="allColumnAlias" />
+        FROM AUTOMATIC_TASK_LOG
+        <where>
+            <if test="taskId != null and taskId != ''">
+                AND task_id = #{taskId,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND STR_TO_DATE(start_time, <include refid="DATE_FORMAT"/>) >=
+                STR_TO_DATE(#{startTime,jdbcType=VARCHAR}, <include refid="DATE_FORMAT"/>)
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND STR_TO_DATE(start_time, <include refid="DATE_FORMAT"/>) &lt;=
+                STR_TO_DATE(#{endTime,jdbcType=VARCHAR}, <include refid="DATE_FORMAT"/>)
+            </if>
+        </where>
+        ORDER BY STR_TO_DATE(start_time, <include refid="DATE_FORMAT"/>) DESC
+    </select>
+
+    <select id="selectByTraceId" resultType="com.peach.scheduler.entity.AutomaticTaskLogDO">
+        SELECT
+        <include refid="allColumnAlias" />
+        FROM AUTOMATIC_TASK_LOG WHERE TRACE_ID = #{traceId,jdbcType=VARCHAR}
+
+    </select>
+
+
+    <delete id="deleteByDays">
+        DELETE FROM automatic_task_log
+        WHERE STR_TO_DATE(start_time, <include refid="DATE_FORMAT"/>) &lt;
+        DATE_FORMAT(DATE_SUB(NOW(), INTERVAL #{days} DAY), <include refid="DATE_FORMAT"/>)
+    </delete>
+
+    <select id="selectListByQO" resultType="com.peach.scheduler.entity.AutomaticTaskLogDO" parameterType="com.peach.scheduler.qo.AutomaticTaskLogQO">
+        SELECT
+        <include refid="allColumnAlias" />
+        FROM AUTOMATIC_TASK_LOG
+        <where>
+            <if test="traceId != null and traceId != ''">
+                AND TRACE_ID = #{traceId,jdbcType=VARCHAR}
+            </if>
+            <if test="taskIdList != null and taskIdList.size() > 0">
+                and TRACE_ID IN
+                <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+                    #{id,jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
 </mapper>

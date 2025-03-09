@@ -41,4 +41,42 @@ public interface TaskEnum {
             return null;
         }
     }
+
+    /**
+     * 日志记录任务执行状态枚举
+     */
+    enum TaskStatusExecuteStatus implements TaskEnum {
+        SUCCESS("SUCCESS", "成功"),
+        FAILED("FAILED", "失败"),
+        VETOED("VETOED", "拒绝");
+
+        private final String code;
+
+        private final String desc;
+
+        TaskStatusExecuteStatus(String code, String desc) {
+            this.code = code;
+            this.desc = desc;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public static TaskStatusExecuteStatus getByCode(Integer code) {
+            if (code == null) {
+                return null;
+            }
+            for (TaskStatusExecuteStatus taskStatusEnum : TaskStatusExecuteStatus.values()) {
+                if (code.equals(taskStatusEnum.getCode())) {
+                    return taskStatusEnum;
+                }
+            }
+            return null;
+        }
+    }
 }

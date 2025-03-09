@@ -175,7 +175,7 @@ public class AutomaticTaskImpl implements IAutomaticTask, ApplicationRunner {
     @Override
     public Map<String, String> immediateQuartz(AutomaticTaskDO automaticTask) {
         // 1、判断任务是否开启并且存在
-        Map<String, String> resultMap = null;
+        Map<String, String> resultMap = new HashMap<>();
         log.info("任务调用总开关开启状态=>[{}]",autoTaskStatus);
         if (!TaskConstant.TASK_STATUS.equals(autoTaskStatus)){
             resultMap.put("message", "任务调用总开关关闭");

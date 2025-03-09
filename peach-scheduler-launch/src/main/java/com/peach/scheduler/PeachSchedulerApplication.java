@@ -2,6 +2,7 @@ package com.peach.scheduler;
 
 import com.peach.scheduler.datasource.DataSourceProperties;
 import com.peach.scheduler.factory.PeachJobFactory;
+import com.peach.scheduler.listener.JobExecutionLogListener;
 import com.peach.scheduler.listener.TaskJobListener;
 import com.peach.scheduler.listener.TaskTriggerListener;
 import com.zaxxer.hikari.HikariConfig;
@@ -137,22 +138,33 @@ public class PeachSchedulerApplication implements WebMvcConfigurer {
         return databaseIdProvider;
     }
 
+    /**
+     * 单机方式注入
+     * @param peachJobFactory
+     * @param jobListener
+     * @param triggerListener
+     * @param jobExecutionLogListener
+     * @return
+     * @throws Exception
+     */
     @Bean
     @ConditionalOnProperty(prefix = "peach-scheduler",name = "cluster" ,havingValue = "false" ,matchIfMissing = true)
-    public Scheduler scheduler(PeachJobFactory peachJobFactory,TaskJobListener jobListener,TaskTriggerListener triggerListener) throws Exception {
-        Scheduler scheduler =  StdSchedulerFactory.getDefaultScheduler();
+    public Scheduler scheduler(PeachJobFactory peachJobFactory, TaskJobListener jobListener, TaskTriggerListener triggerListener, JobExecutionLogListener jobExecutionLogListener) throws Exception {
+        Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
         scheduler.setJobFactory(peachJobFactory);
-        scheduler.getListenerManager().addJobListener(
-                jobListener,
-                GroupMatcher.anyGroup()
-        );
-        scheduler.getListenerManager().addTriggerListener(
-                triggerListener,
-                GroupMatcher.anyGroup()
-        );
+        scheduler.getListenerManager().addJobListener(jobListener, GroupMatcher.anyGroup());
+        scheduler.getListenerManager().addTriggerListener(triggerListener, GroupMatcher.anyGroup());
+        scheduler.getListenerManager().addJobListener(jobExecutionLogListener, GroupMatcher.anyGroup());
         return scheduler;
     }
 
+    /**
+     * 集群方式注入
+     * @param dataSource
+     * @param peachJobFactory
+     * @return
+     * @throws Exception
+     */
     @Bean
     @ConditionalOnProperty(prefix = "peach-scheduler",name = "cluster" ,havingValue = "true" ,matchIfMissing = false)
     public SchedulerFactoryBean schedulerFactoryBean(DataSource dataSource,PeachJobFactory peachJobFactory) throws Exception {

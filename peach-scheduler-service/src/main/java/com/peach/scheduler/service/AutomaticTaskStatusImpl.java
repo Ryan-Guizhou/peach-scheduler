@@ -2,8 +2,6 @@ package com.peach.scheduler.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.peach.common.enums.StatusEnum;
-import com.peach.common.exception.BusniessException;
 import com.peach.common.response.PageResult;
 import com.peach.common.util.PeachCollectionUtils;
 import com.peach.common.util.StringUtil;
@@ -16,8 +14,6 @@ import org.springframework.stereotype.Indexed;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,7 +32,7 @@ public class AutomaticTaskStatusImpl implements IAutomaticTaskStatus {
 
     @Override
     public PageResult<AutomaticTaskStatusDO> getTaskStatusByTaskIds(AutomaticTaskStatusQO qo) {
-        PageInfo pageInfo = PageHelper.startPage(qo.getPageNum(), qo.getPageSize())
+        PageInfo<AutomaticTaskStatusDO> pageInfo = PageHelper.startPage(qo.getPageNum(), qo.getPageSize())
                     .doSelectPageInfo(() -> {
                         automaticTaskStatusDao.selectByQO(qo);
                     });

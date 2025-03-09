@@ -1,7 +1,9 @@
 package com.peach.scheduler.qo;
 
 import com.peach.common.entity.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,20 +12,22 @@ import java.util.List;
  * @Author Mr Shu
  * @Version 1.0.0
  * @Description //TODO
- * @CreateTime 2025/3/7 15:26
+ * @CreateTime 2025/3/10 0:27
  */
 @Data
-public class AutomaticTaskQO extends BaseEntity implements Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+public class AutomaticTaskLogQO extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -1979813656782894527L;
 
     /**
-     * 任务id
+     * traceId
      */
-    private String taskId;
+    private String traceId;
 
     /**
-     * 任务di集合
+     * traceIdList
      */
     private List<String> taskIdList;
 

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Indexed;
 @Slf4j
 @Indexed
 @Component
-public class GenerRestJob extends BaseJob{
+public class GeneratorRestJob extends BaseJob{
 
     @Override
     protected void executeInternal(JobExecutionContext context) {

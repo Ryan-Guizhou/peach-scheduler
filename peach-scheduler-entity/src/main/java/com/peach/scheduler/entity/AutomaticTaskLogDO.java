@@ -1,51 +1,72 @@
 package com.peach.scheduler.entity;
 
 import com.peach.common.generator.MapperGenerator;
-import lombok.Data;
 import io.swagger.annotations.ApiModelProperty;
-import javax.persistence.*;
+import lombok.Builder;
+import lombok.Data;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
  * @Author Mr Shu
  * @Version 1.0.0
  * @Description //TODO
- * @CreateTime 2025/03/06 23:02
+ * @CreateTime 2025/03/09 23:52
  */
 @Data
+@Builder
 @Table(name = "AUTOMATIC_TASK_LOG")
 public class AutomaticTaskLogDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(name = "ID")
-    @ApiModelProperty(value = "任务日志主键")
-    private String id;
+    @Column(name = "LOG_ID")
+    @ApiModelProperty(value = "日志ID")
+    private String logId;
 
     @Column(name = "TASK_ID")
-    @ApiModelProperty(value = "任务主键")
+    @ApiModelProperty(value = "任务ID")
     private String taskId;
-
-    @Column(name = "TASK_CODE")
-    @ApiModelProperty(value = "任务编码")
-    private String taskCode;
 
     @Column(name = "TASK_NAME")
     @ApiModelProperty(value = "任务名称")
     private String taskName;
 
-    @Column(name = "TASK_DESC")
-    @ApiModelProperty(value = "定时任务描述")
-    private String taskDesc;
+    @Column(name = "START_TIME")
+    @ApiModelProperty(value = "开始时间")
+    private String startTime;
 
-    @Column(name = "OPT_CODE")
-    @ApiModelProperty(value = "操作编码")
-    private String optCode;
+    @Column(name = "END_TIME")
+    @ApiModelProperty(value = "结束时间")
+    private String endTime;
 
-    @Column(name = "OPT_NAME")
-    @ApiModelProperty(value = "操作名称")
-    private String optName;
+    @Column(name = "EXECUTION_TIME")
+    @ApiModelProperty(value = "执行时长(毫秒)")
+    private Long executionTime;
+
+    @Column(name = "STATUS")
+    @ApiModelProperty(value = "执行状态:SUCCESS-成功,FAILED-失败,VETOED-被否决")
+    private String status;
+
+    @Column(name = "ERROR_MSG")
+    @ApiModelProperty(value = "错误信息")
+    private String errorMsg;
+
+    @Column(name = "TRACE_ID")
+    @ApiModelProperty(value = "追踪ID")
+    private String traceId;
+
+    @Column(name = "PARAMS")
+    @ApiModelProperty(value = "执行参数")
+    private String params;
+
+    @Column(name = "RESULT")
+    @ApiModelProperty(value = "执行结果")
+    private String result;
 
     @Column(name = "OPT_USER_ID")
     @ApiModelProperty(value = "操作人ID")
@@ -54,10 +75,6 @@ public class AutomaticTaskLogDO implements Serializable {
     @Column(name = "OPT_USER_NAME")
     @ApiModelProperty(value = "操作人名称")
     private String optUserName;
-
-    @Column(name = "OPT_TIME")
-    @ApiModelProperty(value = "操作时间")
-    private String optTime;
 
     public static void main(String[] args) {
         System.out.println(MapperGenerator.genMapper(AutomaticTaskLogDO.class));

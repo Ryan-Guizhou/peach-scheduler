@@ -13,7 +13,11 @@ import org.quartz.JobExecutionException;
 public abstract class BaseJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        executeInternal(context);
+        try {
+            executeInternal(context);
+        } catch (Exception e) {
+            throw new JobExecutionException(e);
+        }
     }
 
 

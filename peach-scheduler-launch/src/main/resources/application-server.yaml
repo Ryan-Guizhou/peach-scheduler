@@ -9,3 +9,19 @@ spring:
     name: peach-scheduler
 peach-scheduler:
   cluster: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,scheduler
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    scheduler:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}

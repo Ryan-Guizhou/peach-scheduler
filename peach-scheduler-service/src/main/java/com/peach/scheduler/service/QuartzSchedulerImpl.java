@@ -2,7 +2,7 @@ package com.peach.scheduler.service;
 
 
 import com.peach.common.util.StringUtil;
-import com.peach.scheduler.GenerRestJob;
+import com.peach.scheduler.GeneratorRestJob;
 import com.peach.scheduler.api.IQuartzScheduler;
 import com.peach.scheduler.constant.TaskConstant;
 import com.peach.scheduler.entity.AutomaticTaskDO;
@@ -98,6 +98,7 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
                 scheduler.triggerJob(jobKey);
                 resultMap.put("message", "定时任务已成功触发执行");
                 resultMap.put("flag", "true");
+                return resultMap;
             }
             resultMap.put("message","该任务处于未开启状态");
             resultMap.put("flag","false");
@@ -226,7 +227,7 @@ public class QuartzSchedulerImpl implements IQuartzScheduler {
         String className = automaticTaskDO.getTaskClass();
         boolean isExternalJob = StringUtil.isNotEmpty(className) &&
                 (className.startsWith(TaskConstant.TASK_CLASS_PREFIX_HTTP) || className.startsWith(TaskConstant.TASK_CLASS_PREFIX_HTTPS));
-        return isExternalJob ? GenerRestJob.class : Class.forName(className);
+        return isExternalJob ? GeneratorRestJob.class : Class.forName(className);
     }
 
     /**

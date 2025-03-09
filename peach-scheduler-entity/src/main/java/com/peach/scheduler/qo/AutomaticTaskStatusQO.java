@@ -17,7 +17,13 @@ public class AutomaticTaskStatusQO extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 8109826533506073671L;
 
+    /**
+     * 任务id
+     */
     private String taskId;
 
+    /**
+     * 任务di集合
+     */
     private List<String> taskIdList;
 }
