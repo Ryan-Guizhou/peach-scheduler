@@ -4,7 +4,7 @@ import com.peach.common.BaseDao;
 import com.peach.common.anno.MyBatisDao;
 import com.peach.scheduler.entity.AutomaticTaskDO;
 import com.peach.scheduler.qo.AutomaticTaskQO;
-import io.swagger.v3.oas.annotations.Parameter;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Indexed;
 
 import java.util.List;
@@ -22,6 +22,6 @@ public interface AutomaticTaskDao extends BaseDao<AutomaticTaskDO> {
 
     List<AutomaticTaskDO> selectListByQO(AutomaticTaskQO automaticTaskQO);
 
-    int isSameTaskCode(@Parameter(name = "taskName") String taskName,@Parameter(name = "taskCode") String taskCode);
+    int isSameTaskCode(@Param("taskName") String taskName, @Param("taskCode") String taskCode);
 
 }

@@ -1,5 +1,7 @@
 package com.peach.scheduler.constant;
 
+import java.util.Objects;
+
 /**
  * @Author Mr Shu
  * @Version 1.0.0
@@ -34,7 +36,7 @@ public interface TaskEnum {
 
         public static TaskStatusEnum getByCode(Integer code) {
             for (TaskStatusEnum taskStatusEnum : TaskStatusEnum.values()) {
-                if (taskStatusEnum.getCode() == code) {
+                if (Objects.equals(taskStatusEnum.getCode(), code)) {
                     return taskStatusEnum;
                 }
             }
@@ -67,7 +69,7 @@ public interface TaskEnum {
             return desc;
         }
 
-        public static TaskStatusExecuteStatus getByCode(Integer code) {
+        public static TaskStatusExecuteStatus getByCode(String code) {
             if (code == null) {
                 return null;
             }
