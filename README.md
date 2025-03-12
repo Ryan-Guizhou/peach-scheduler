@@ -1,5 +1,3 @@
-我来帮你重写一个更有吸引力的 HELP.md 文档:
-
 # Peach Scheduler - 轻量级分布式任务调度系统
 
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
