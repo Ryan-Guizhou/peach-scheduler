@@ -1,3 +1,0 @@
-META-INF\spring.components
-com\peach\scheduler\rest\HealthCheckController.class
-com\peach\scheduler\rest\QuartzSchedulerController.class

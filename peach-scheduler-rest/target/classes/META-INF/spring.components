@@ -1,2 +1,0 @@
-com.peach.scheduler.rest.HealthCheckController=org.springframework.stereotype.Component,com.peach.scheduler.rest.HealthCheckController
-com.peach.scheduler.rest.QuartzSchedulerController=org.springframework.stereotype.Component,com.peach.scheduler.rest.QuartzSchedulerController

@@ -1,3 +1,0 @@
-com.peach.scheduler.entity.AutomaticTaskDO=javax.persistence.Table
-com.peach.scheduler.entity.AutomaticTaskLogDO=javax.persistence.Table
-com.peach.scheduler.entity.AutomaticTaskStatusDO=javax.persistence.Table

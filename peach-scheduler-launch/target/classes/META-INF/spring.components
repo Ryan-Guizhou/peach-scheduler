@@ -1,2 +1,0 @@
-com.peach.scheduler.PeachSchedulerApplication=org.springframework.stereotype.Component,org.springframework.boot.SpringBootConfiguration
-com.peach.scheduler.datasource.DataSourceProperties=org.springframework.stereotype.Component,org.springframework.boot.context.properties.ConfigurationProperties
