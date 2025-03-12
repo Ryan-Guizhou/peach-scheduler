@@ -1,7 +1,0 @@
-com\peach\scheduler\event\TaskConfigChangeEvent.class
-com\peach\scheduler\entity\AutomaticTaskDO.class
-com\peach\scheduler\entity\AutomaticTaskLogDO.class
-com\peach\scheduler\qo\AutomaticTaskQO.class
-com\peach\scheduler\entity\AutomaticTaskStatusDO.class
-META-INF\spring.components
-com\peach\scheduler\qo\AutomaticTaskStatusQO.class

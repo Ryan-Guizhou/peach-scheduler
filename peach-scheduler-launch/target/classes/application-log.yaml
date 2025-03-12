@@ -1,4 +1,0 @@
-# 日志配置
-logging:
-  logback:
-    dir: ${user.dir}/logs
