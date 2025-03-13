@@ -10,7 +10,7 @@ import com.peach.common.exception.BusniessException;
 import com.peach.common.response.PageResult;
 import com.peach.common.util.DateUtil;
 import com.peach.common.util.IDGenerator;
-import com.peach.common.util.PeachCollectionUtils;
+import com.peach.common.util.PeachCollectionUtil;
 import com.peach.scheduler.api.IAutomaticTask;
 import com.peach.scheduler.api.IAutomaticTaskStatus;
 import com.peach.scheduler.api.IQuartzScheduler;
@@ -75,7 +75,7 @@ public class AutomaticTaskImpl implements IAutomaticTask, ApplicationRunner {
             return;
         }
         List<AutomaticTaskDO> allExistTaskList = automaticTaskDao.select(new AutomaticTaskDO());
-        if (PeachCollectionUtils.isEmpty(allExistTaskList)){
+        if (PeachCollectionUtil.isEmpty(allExistTaskList)){
             log.info("没有需要启动的定时任务");
             return;
         }
@@ -98,7 +98,7 @@ public class AutomaticTaskImpl implements IAutomaticTask, ApplicationRunner {
 
         //清空明细表
         iAutomaticTaskStatus.delete();
-        if (!PeachCollectionUtils.isNotEmpty(allTaskStatusList)){
+        if (!PeachCollectionUtil.isNotEmpty(allTaskStatusList)){
             return;
         }
         iAutomaticTaskStatus.insertBatch(allTaskStatusList);
@@ -196,7 +196,7 @@ public class AutomaticTaskImpl implements IAutomaticTask, ApplicationRunner {
             AutomaticTaskStatusQO qo = new AutomaticTaskStatusQO();
             qo.setTaskId(automaticTask.getTaskId());
             List<AutomaticTaskStatusDO> existsTaskStatusList = iAutomaticTaskStatus.getTaskStatusByTaskId(qo);
-            if (PeachCollectionUtils.isNotEmpty(existsTaskStatusList)){
+            if (PeachCollectionUtil.isNotEmpty(existsTaskStatusList)){
                 AutomaticTaskStatusDO ts = existsTaskStatusList.get(0);
                 AutomaticTaskStatusDO automaticTaskStatusDO = new AutomaticTaskStatusDO();
                 automaticTaskStatusDO.setStartTime(ts.getStartTime() == null ? DateUtil.nowTime() : ts.getStartTime());
@@ -254,7 +254,7 @@ public class AutomaticTaskImpl implements IAutomaticTask, ApplicationRunner {
         AutomaticTaskStatusQO automaticTaskStatusQO =  new AutomaticTaskStatusQO();
         automaticTaskStatusQO.setTaskId(statusDO.getTaskId());
         List<AutomaticTaskStatusDO> statusDOList = iAutomaticTaskStatus.getTaskStatusByTaskId(automaticTaskStatusQO);
-        if (PeachCollectionUtils.isNotEmpty(statusDOList)){
+        if (PeachCollectionUtil.isNotEmpty(statusDOList)){
             AutomaticTaskStatusDO automaticTaskStatusDO = statusDOList.get(0);
             automaticTaskStatusDO.setStatus(statusDO.getStatus());
             automaticTaskStatusDO.setOkCount(automaticTaskStatusDO.getOkCount() == null ? 1 : automaticTaskStatusDO.getOkCount() + 1);

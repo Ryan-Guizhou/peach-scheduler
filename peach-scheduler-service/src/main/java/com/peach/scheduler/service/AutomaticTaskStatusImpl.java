@@ -3,7 +3,7 @@ package com.peach.scheduler.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.peach.common.response.PageResult;
-import com.peach.common.util.PeachCollectionUtils;
+import com.peach.common.util.PeachCollectionUtil;
 import com.peach.common.util.StringUtil;
 import com.peach.scheduler.api.IAutomaticTaskStatus;
 import com.peach.scheduler.dao.AutomaticTaskStatusDao;
@@ -63,7 +63,7 @@ public class AutomaticTaskStatusImpl implements IAutomaticTaskStatus {
 
     @Override
     public void insertBatch(List<AutomaticTaskStatusDO> list) {
-        if (PeachCollectionUtils.isEmpty(list)){
+        if (PeachCollectionUtil.isEmpty(list)){
             log.warn("插入的数据为空");
             return;
         }
