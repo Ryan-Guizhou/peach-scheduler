@@ -298,7 +298,7 @@
         INSERT INTO AUTOMATIC_TASK (
         <include refid="allColumn" />
         ) VALUES
-        <foreach collection="list" index="index" item="item">
+        <foreach collection="list" index="index" item="item" separator=",">
             (<include refid="itemAllColumnValue"/>)
         </foreach>
     </insert>
