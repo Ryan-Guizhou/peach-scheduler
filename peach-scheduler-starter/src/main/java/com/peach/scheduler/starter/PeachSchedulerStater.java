@@ -49,7 +49,7 @@ public class PeachSchedulerStater {
                         .version("PEACH-1.0.0")
                         .build())
                 //分组名称
-                .groupName("文件服务API")
+                .groupName("调度模块API")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.peach.scheduler"))
                 .build();
