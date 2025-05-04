@@ -20,4 +20,9 @@ public class GeneratorRestJob extends BaseJob{
     protected void executeInternal(JobExecutionContext context) {
 
     }
+
+    @Override
+    protected String getJobName() {
+        return "GeneratorRestJob";
+    }
 }

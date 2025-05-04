@@ -1,11 +1,13 @@
 package com.peach.scheduler.entity;
 
 import com.peach.common.generator.MapperGenerator;
-import lombok.Data;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import org.apache.commons.beanutils.PropertyUtils;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Map;
 

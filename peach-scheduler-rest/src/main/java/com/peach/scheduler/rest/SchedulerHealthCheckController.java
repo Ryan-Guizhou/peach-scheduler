@@ -1,6 +1,7 @@
 package com.peach.scheduler.rest;
 
 import com.peach.common.response.Response;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Indexed;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,13 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Indexed
 @RestController
-@RequestMapping("/health")
-public class HealthCheckController {
+@RequestMapping("/scheduler")
+@Api(tags = "schedulerHealthCheckController",value = "调度健康检查")
+public class SchedulerHealthCheckController {
 
-    @GetMapping
+    @GetMapping("/healthCheck")
     public Response healthCheck() {
-        log.info("health check");
-        return Response.success().setData("I'm health");
+        return Response.success().setData("I am healthy");
     }
 
 }

@@ -8,6 +8,7 @@ import com.peach.scheduler.entity.AutomaticTaskDO;
 import com.peach.scheduler.entity.AutomaticTaskStatusDO;
 import com.peach.scheduler.qo.AutomaticTaskQO;
 import com.peach.scheduler.qo.AutomaticTaskStatusQO;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Indexed;
@@ -28,6 +29,7 @@ import javax.annotation.Resource;
 @Indexed
 @RestController
 @RequestMapping("/quartz")
+@Api(tags = "quartzSchedulerController",value = "任务调度")
 public class QuartzSchedulerController {
 
     @Resource

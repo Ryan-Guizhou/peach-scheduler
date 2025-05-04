@@ -21,4 +21,9 @@ public class TestJob extends BaseJob{
             log.error("my name is shu : [{}]",i);
         }
     }
+
+    @Override
+    protected String getJobName() {
+        return "TestJob";
+    }
 }

@@ -5,6 +5,7 @@ import com.peach.common.response.Response;
 import com.peach.scheduler.api.IAutomaticTaskLog;
 import com.peach.scheduler.entity.AutomaticTaskLogDO;
 import com.peach.scheduler.qo.AutomaticTaskLogQO;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Indexed;
@@ -22,6 +23,7 @@ import javax.annotation.Resource;
 @Indexed
 @RestController
 @RequestMapping("/quartz/log")
+@Api(tags = "automaticTaskLogController" ,value = "任务调度日志")
 public class AutomaticTaskLogController {
 
     @Resource
