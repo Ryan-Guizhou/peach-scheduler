@@ -8,7 +8,6 @@ import com.peach.scheduler.dao.AutomaticTaskLogDao;
 import com.peach.scheduler.entity.AutomaticTaskLogDO;
 import com.peach.scheduler.qo.AutomaticTaskLogQO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Indexed;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +22,7 @@ import javax.annotation.Resource;
 @Slf4j
 @Indexed
 @Service
-@ConditionalOnProperty(prefix = "log-storage", name = "type", havingValue = "mysql")
-public class MysqlAutomaticTaskLogImpl implements IAutomaticTaskLog {
+public class AutomaticTaskLogImpl implements IAutomaticTaskLog {
 
     @Resource
     private AutomaticTaskLogDao automaticTaskLogDao;
